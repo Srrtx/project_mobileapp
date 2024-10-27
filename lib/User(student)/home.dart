@@ -36,7 +36,7 @@ class Home extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(243, 243, 224, 1),
+                      color: Color.fromRGBO(240, 235, 227, 1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
@@ -55,7 +55,7 @@ class Home extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(243, 243, 224, 1),
+                      color: Color.fromRGBO(240, 235, 227, 1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
@@ -133,8 +133,71 @@ class Home extends StatelessWidget {
               icon: Icon(Icons.account_circle), label: 'Profile'),
         ],
       ),
+
+      //FAB for add room
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     // Action to add a room (e.g., show a dialog or navigate to another screen)
+      //     _showAddRoomDialog(context);
+      //   },
+      //   child: const Icon(Icons.add),
+      //   backgroundColor: Color.fromARGB(255, 104, 104, 104),
+      // ),
     );
   }
+
+//   void _showAddRoomDialog(BuildContext context) {
+//     // Controllers to capture user input
+//     final TextEditingController roomNameController = TextEditingController();
+//     final TextEditingController roomNumberController = TextEditingController();
+//     final TextEditingController roomDetailsController = TextEditingController();
+
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           title: const Text('Add Room'),
+//           content: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               TextField(
+//                 controller: roomNameController,
+//                 decoration: InputDecoration(labelText: 'Room Name'),
+//               ),
+//               TextField(
+//                 controller: roomNumberController,
+//                 decoration: InputDecoration(labelText: 'Room Number'),
+//                 keyboardType: TextInputType.number,
+//               ),
+//               TextField(
+//                 controller: roomDetailsController,
+//                 decoration: InputDecoration(labelText: 'Room Details'),
+//                 maxLines: 3,
+//               )
+//             ],
+//           ),
+//           actions: [
+//             TextButton(
+//               onPressed: () {
+//                 // Capture the input data
+//                 String roomName = roomNameController.text;
+//                 String roomNumber = roomNumberController.text;
+//                 String roomDetails = roomDetailsController.text;
+
+//                 Navigator.of(context).pop(); // Close the dialog
+//               },
+//               child: const Text('Add'),
+//             ),
+//             TextButton(
+//                 onPressed: () {
+//                   Navigator.of(context).pop();
+//                 },
+//                 child: Text('Close'))
+//           ],
+//         );
+//       },
+//     );
+//   }
 }
 
 class RoomSlot extends StatelessWidget {
@@ -152,7 +215,7 @@ class RoomSlot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color.fromRGBO(243, 243, 224, 1),
+      color: Color.fromRGBO(240, 235, 227, 1),
       margin: const EdgeInsets.symmetric(vertical: 4),
       elevation: 4,
       shape: RoundedRectangleBorder(
