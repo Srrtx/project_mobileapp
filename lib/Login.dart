@@ -110,9 +110,10 @@ class LoginPage extends StatelessWidget {
                         );
                       },
                       child: Text(
-                        'Register',
+                        "Don't have an account create an Account",
                         style: TextStyle(
                           color: Colors.grey,
+                          fontSize: 10,
                         ),
                       ),
                     ),
