@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Status_check extends StatelessWidget {
-  const Status_check({super.key});
+class select_room extends StatelessWidget {
+  const select_room({super.key});
 
   @override
   Widget build(BuildContext context) {
