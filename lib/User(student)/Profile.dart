@@ -4,8 +4,8 @@ import 'package:project_mobileapp/User(student)/Check_status.dart';
 import 'package:project_mobileapp/User(student)/History.dart';
 import 'package:project_mobileapp/User(student)/home.dart';
 
-class ProfileApp extends StatelessWidget {
-  const ProfileApp({super.key});
+class ProfileUser extends StatelessWidget {
+  const ProfileUser({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +46,6 @@ class _ProfilePageState extends State<ProfilePage> {
         );
         break;
       case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfileApp()),
-        );
         break;
     }
   }
@@ -177,5 +173,5 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 void main() {
-  runApp(const ProfileApp());
+  runApp(const ProfileUser());
 }
