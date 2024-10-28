@@ -113,7 +113,6 @@ class LoginPage extends StatelessWidget {
                         'Register',
                         style: TextStyle(
                           color: Colors.grey,
-                          decoration: TextDecoration.underline,
                         ),
                       ),
                     ),
