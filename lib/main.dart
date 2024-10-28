@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:project_mobileapp/Staff/home_staff.dart';
-import 'package:project_mobileapp/User(student)/Profile.dart';
-import 'package:project_mobileapp/User(student)/home.dart';
+import 'package:project_mobileapp/Login.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: ProfileApp(),
+    home: Login(),
     // theme: ThemeData(),
     debugShowCheckedModeBanner: false,
   ));
