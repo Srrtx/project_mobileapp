@@ -26,7 +26,7 @@ class LoginPage extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                color: Color(0xFFF0EBE3), // สีพื้นหลังของกล่องล็อกอิน
+                color: Color(0xFFF0EBE3),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
@@ -48,21 +48,17 @@ class LoginPage extends StatelessWidget {
                   SizedBox(height: 20),
                   TextField(
                     decoration: InputDecoration(
-                      filled: true, // ทำให้มีสีพื้นหลัง
-                      fillColor: Colors.white, // สีพื้นหลังของกล่อง
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: 'Username',
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.grey.shade300), // กรอบสีเทาอ่อน
+                        borderSide: BorderSide(color: Colors.grey.shade300),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color:
-                                Colors.grey.shade300), // สีกรอบเมื่อไม่ถูกเลือก
+                        borderSide: BorderSide(color: Colors.grey.shade300),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.grey.shade500), // สีกรอบเมื่อถูกเลือก
+                        borderSide: BorderSide(color: Colors.grey.shade500),
                       ),
                     ),
                   ),
@@ -70,21 +66,17 @@ class LoginPage extends StatelessWidget {
                   TextField(
                     obscureText: true,
                     decoration: InputDecoration(
-                      filled: true, // ทำให้มีสีพื้นหลัง
-                      fillColor: Colors.white, // สีพื้นหลังของกล่อง
+                      filled: true,
+                      fillColor: Colors.white,
                       labelText: 'Password',
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.grey.shade300), // กรอบสีเทาอ่อน
+                        borderSide: BorderSide(color: Colors.grey.shade300),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color:
-                                Colors.grey.shade300), // สีกรอบเมื่อไม่ถูกเลือก
+                        borderSide: BorderSide(color: Colors.grey.shade300),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.grey.shade500), // สีกรอบเมื่อถูกเลือก
+                        borderSide: BorderSide(color: Colors.grey.shade500),
                       ),
                     ),
                   ),
@@ -114,8 +106,7 @@ class LoginPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const RegisterPage()), // เชื่อมกับ RegisterPage
+                              builder: (context) => const RegisterPage()),
                         );
                       },
                       child: Text(
