@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Login.dart';
-import 'package:project_mobileapp/User(student)/home.dart'; // นำเข้า Home.dart
+import 'package:project_mobileapp/User(student)/Check_status.dart';
+import 'package:project_mobileapp/User(student)/History.dart';
+import 'package:project_mobileapp/User(student)/home.dart';
 
 class ProfileApp extends StatelessWidget {
   const ProfileApp({super.key});
@@ -14,7 +16,6 @@ class ProfileApp extends StatelessWidget {
 }
 
 class ProfilePage extends StatefulWidget {
-  // เปลี่ยนจาก StatelessWidget เป็น StatefulWidget
   const ProfilePage({super.key});
 
   @override
@@ -22,28 +23,45 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int _selectedIndex = 3; // สถานะดัชนีที่เลือก
+  int _selectedIndex = 3;
 
   void _onDestinationSelected(int index) {
-    // เปลี่ยนหน้าเมื่อคลิกที่ไอคอน
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const Home()), // เปลี่ยนเส้นทางไปหน้า Home
-      );
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Home()),
+        );
+        break;
+      case 1:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Status_check()),
+        );
+        break;
+      case 2:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const history()),
+        );
+        break;
+      case 3:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfileApp()),
+        );
+        break;
     }
-    // คุณสามารถเพิ่มการนำทางไปยังหน้าที่อื่น ๆ ที่นี่
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Profile'),
+        title: const Text('Your Profile'), // เพิ่มหัวข้อที่นี่
       ),
       body: Container(
-        color: Colors.white,
+        color: Colors.white, // ตั้งค่าสีพื้นหลังให้เต็มหน้าจอ
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -51,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Color(0xFFF0EBE3),
+                  color: Color(0xFFF0EBE3), // สีพื้นหลังของกล่องโปรไฟล์
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -94,9 +112,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Full Name: jj'),
+                            Text('Full Name: jj',
+                                style: TextStyle(fontSize: 14)),
                             SizedBox(height: 8),
-                            Text('Email: abc@example.com'),
+                            Text('Email: abc@example.com',
+                                style: TextStyle(fontSize: 14)),
                           ],
                         ),
                       ),
@@ -133,20 +153,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Container(),
-              ),
+              Expanded(child: Container()), // ส่วนที่เหลือของหน้าจอ
             ],
           ),
         ),
       ),
-      // Adding Bottom Navigation Bar here
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
         selectedIndex: _selectedIndex,
-        onDestinationSelected:
-            _onDestinationSelected, // เพิ่มฟังก์ชันที่เปลี่ยนหน้า
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
