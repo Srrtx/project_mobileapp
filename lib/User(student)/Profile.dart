@@ -3,6 +3,7 @@ import 'package:project_mobileapp/Login.dart';
 import 'package:project_mobileapp/User(student)/Check_status.dart';
 import 'package:project_mobileapp/User(student)/History.dart';
 import 'package:project_mobileapp/User(student)/home.dart';
+import 'package:project_mobileapp/User(student)/home2.dart';
 
 class ProfileUser extends StatelessWidget {
   const ProfileUser({super.key});
@@ -30,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const Home()),
+          MaterialPageRoute(builder: (context) => const Home2()),
         );
         break;
       case 1:

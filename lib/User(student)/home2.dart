@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'Room_select2.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class Home2 extends StatefulWidget {
+  const Home2({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Home2> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home2> {
   @override
   Widget build(BuildContext context) {
+    // Get the current date and time
+    DateTime now = DateTime.now();
+    String currentDate = '${now.day}/${now.month}/${now.year}';
+    String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -23,38 +28,38 @@ class _HomeState extends State<Home> {
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Card(
-                  color: Color(0xFFF0EBE3), // Beige color
+                  color: const Color(0xFFF0EBE3), // Beige color
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        Icon(Icons.calendar_today),
-                        SizedBox(width: 8),
+                        const Icon(Icons.calendar_today),
+                        const SizedBox(width: 8),
                         Text(
-                          '21/10/24',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          currentDate, // Use dynamic date
+                          style: const TextStyle(fontSize: 16),
                         ),
                       ],
                     ),
                   ),
                 ),
                 Card(
-                  color: Color(0xFFF0EBE3), // Beige color
+                  color: const Color(0xFFF0EBE3), // Beige color
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        Icon(Icons.access_time),
-                        SizedBox(width: 8),
+                        const Icon(Icons.access_time),
+                        const SizedBox(width: 8),
                         Text(
-                          '10:42',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          currentTime, // Use dynamic time
+                          style: const TextStyle(fontSize: 16),
                         ),
                       ],
                     ),
@@ -86,26 +91,18 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '',
-          ),
+      //Nav bar (bottom)
+      bottomNavigationBar: NavigationBar(
+        height: 60,
+        elevation: 0,
+        selectedIndex: 0,
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(
+              icon: Icon(Icons.notifications), label: 'Status'),
+          NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
+          NavigationDestination(
+              icon: Icon(Icons.account_circle), label: 'Profile'),
         ],
       ),
     );
@@ -127,26 +124,30 @@ class RoomCard extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         child: Row(
           children: [
-            Image.asset(
-              'assets/meeting.png',
-              width: 150,
-              height: 150,
-              fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                'assets/images/meeting.png',
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     roomName,
                     style: const TextStyle(
-                      fontSize: 25,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 90),
+                  const SizedBox(height: 40),
                   Text(
                     occupancy,
                     style: const TextStyle(
