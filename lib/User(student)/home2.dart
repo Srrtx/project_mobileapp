@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'Room_select2.dart';
+import 'Check_status.dart';
+import 'History.dart';
+import 'Profile.dart';
 
 class Home2 extends StatefulWidget {
   const Home2({super.key});
@@ -15,6 +18,37 @@ class _HomeState extends State<Home2> {
     DateTime now = DateTime.now();
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+
+    //Nav
+    int _selectedIndex = 0;
+    void _onDestinationSelected(int index) {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Home2()),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Status_check()),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const history()),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileUser()),
+          );
+          break;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -95,7 +129,8 @@ class _HomeState extends State<Home2> {
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
-        selectedIndex: 0,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
