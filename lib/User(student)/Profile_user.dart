@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Login.dart';
 import 'package:project_mobileapp/User(student)/Check_status.dart';
-import 'package:project_mobileapp/User(student)/History.dart';
+import 'package:project_mobileapp/User(student)/History_user.dart';
+
 import 'package:project_mobileapp/User(student)/home.dart';
-import 'package:project_mobileapp/User(student)/home2.dart';
+import 'package:project_mobileapp/User(student)/home_user.dart';
 
 class ProfileUser extends StatelessWidget {
   const ProfileUser({super.key});
@@ -31,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const Home2()),
+          MaterialPageRoute(builder: (context) => const HomeUser()),
         );
         break;
       case 1:
@@ -43,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
       case 2:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const history()),
+          MaterialPageRoute(builder: (context) => const HistoryUser()),
         );
         break;
       case 3:

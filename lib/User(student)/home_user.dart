@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:project_mobileapp/User(student)/History_user.dart';
 import 'Room_select.dart';
 import 'Check_status.dart';
-import 'History.dart';
-import 'Profile.dart';
+import 'Profile_user.dart';
 
-class Home2 extends StatefulWidget {
-  const Home2({super.key});
+class HomeUser extends StatefulWidget {
+  const HomeUser({super.key});
 
   @override
-  State<Home2> createState() => _HomeState();
+  State<HomeUser> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home2> {
+class _HomeState extends State<HomeUser> {
   @override
   Widget build(BuildContext context) {
     // Get the current date and time
@@ -26,7 +26,7 @@ class _HomeState extends State<Home2> {
         case 0:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const Home2()),
+            MaterialPageRoute(builder: (context) => const HomeUser()),
           );
           break;
         case 1:
@@ -38,7 +38,7 @@ class _HomeState extends State<Home2> {
         case 2:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const history()),
+            MaterialPageRoute(builder: (context) => const HistoryUser()),
           );
           break;
         case 3:
