@@ -41,7 +41,7 @@ class _BookingReqState extends State<BookingReq> {
         case 2:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const DashboardApprover()),
+            MaterialPageRoute(builder: (context) => const DashboardApproved()),
           );
           break;
         case 3:
@@ -91,7 +91,8 @@ class _BookingReqState extends State<BookingReq> {
                         Text(
                           currentDate,
                           style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 16,
+                          ),
                         ),
                       ],
                     ),
@@ -102,7 +103,7 @@ class _BookingReqState extends State<BookingReq> {
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     decoration: BoxDecoration(
                       color: const Color.fromRGBO(240, 235, 227, 1),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
                       children: [
@@ -111,7 +112,8 @@ class _BookingReqState extends State<BookingReq> {
                         Text(
                           currentTime,
                           style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 16,
+                          ),
                         ),
                       ],
                     ),
@@ -153,7 +155,7 @@ class _BookingReqState extends State<BookingReq> {
           NavigationDestination(
               icon: Icon(Icons.notifications), label: 'Request'),
           NavigationDestination(
-              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
+              icon: Icon(Icons.space_dashboard_rounded), label: 'Dashboard'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),

@@ -6,6 +6,7 @@ import 'Dashboard_approver.dart';
 import 'booking_req.dart';
 import 'room_select.dart';
 import 'Home_approver.dart';
+import 'Dashboard_approver.dart';
 
 class Profileapprover extends StatelessWidget {
   const Profileapprover({super.key});
@@ -42,7 +43,7 @@ class ProfilePage extends StatelessWidget {
         case 2:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const DashboardApprover()),
+            MaterialPageRoute(builder: (context) => const DashboardApproved()),
           );
           break;
         case 3:
@@ -183,7 +184,7 @@ class ProfilePage extends StatelessWidget {
           NavigationDestination(
               icon: Icon(Icons.notifications), label: 'Request'),
           NavigationDestination(
-              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
+              icon: Icon(Icons.space_dashboard_rounded), label: 'Dashboard'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),

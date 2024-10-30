@@ -39,7 +39,7 @@ class _HomeState extends State<HomeApprover> {
         case 2:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const DashboardApprover()),
+            MaterialPageRoute(builder: (context) => const DashboardApproved()),
           );
           break;
         case 3:
@@ -145,7 +145,7 @@ class _HomeState extends State<HomeApprover> {
           NavigationDestination(
               icon: Icon(Icons.notifications), label: 'Request'),
           NavigationDestination(
-              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
+              icon: Icon(Icons.space_dashboard_rounded), label: 'Dashboard'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
