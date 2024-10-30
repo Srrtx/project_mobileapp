@@ -38,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
       case 1:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const Status_check()),
+          MaterialPageRoute(builder: (context) => const CheckstatusUser()),
         );
         break;
       case 2:

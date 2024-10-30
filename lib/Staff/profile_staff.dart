@@ -14,6 +14,36 @@ class ProfileStaff extends StatelessWidget {
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
+  //  //Nav
+  // int _selectedIndex = 1;
+  // void _onDestinationSelected(int index) {
+  //   switch (index) {
+  //     case 0:
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const HomeStaff()),
+  //       );
+  //       break;
+  //     case 1:
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const DashboardStaff()),
+  //       );
+  //       break;
+  //     case 2:
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const HistoryStaff()),
+  //       );
+  //       break;
+  //     case 3:
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const ProfileStaff()),
+  //       );
+  //       break;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -122,13 +152,25 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
               ),
-              Expanded(
-                child: Container(),
-              ),
             ],
           ),
         ),
       ),
+      //  //Nav bar (bottom)
+      // bottomNavigationBar: NavigationBar(
+      //   height: 60,
+      //   elevation: 0,
+      //   selectedIndex: _selectedIndex,
+      //   onDestinationSelected: _onDestinationSelected,
+      //   destinations: const [
+      //     NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+      //     NavigationDestination(
+      //         icon: Icon(Icons.pie_chart), label: 'Dashboard'),
+      //     NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
+      //     NavigationDestination(
+      //         icon: Icon(Icons.account_circle), label: 'Profile'),
+      //   ],
+      // ),
     );
   }
 }

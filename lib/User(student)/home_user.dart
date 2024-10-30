@@ -32,7 +32,7 @@ class _HomeState extends State<HomeUser> {
         case 1:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const Status_check()),
+            MaterialPageRoute(builder: (context) => const CheckstatusUser()),
           );
           break;
         case 2:
@@ -112,7 +112,7 @@ class _HomeState extends State<HomeUser> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              const Roomselect()), // Change this if necessary
+                              const RoomSelect()), // Change this if necessary
                     );
                   },
                   child: const RoomCard(

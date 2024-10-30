@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'Dashboard_staff.dart';
+import 'history_staff.dart';
+import 'profile_staff.dart';
 
 class HomeStaff extends StatefulWidget {
   const HomeStaff({super.key});
@@ -27,6 +30,37 @@ class _HomeStaffState extends State<HomeStaff> {
     DateTime now = DateTime.now();
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+
+    //Nav
+    int _selectedIndex = 1;
+    void _onDestinationSelected(int index) {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeStaff()),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardStaff()),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HistoryStaff()),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileStaff()),
+          );
+          break;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -109,14 +143,16 @@ class _HomeStaffState extends State<HomeStaff> {
           ),
         ),
       ),
+      //Nav bar (bottom)
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
-        selectedIndex: 0,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.notifications), label: 'Status'),
+              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
