@@ -69,44 +69,46 @@ class _HomeState extends State<HomeApprover> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Card(
-                  color: const Color(0xFFF0EBE3), // Beige color
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.calendar_today),
-                        const SizedBox(width: 8),
-                        Text(
-                          currentDate, // Use dynamic date
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Card(
+                    color: const Color(0xFFF0EBE3), // Beige color
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.calendar_today),
+                          const SizedBox(width: 8),
+                          Text(
+                            currentDate, // Use dynamic date
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Card(
-                  color: const Color(0xFFF0EBE3), // Beige color
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.access_time),
-                        const SizedBox(width: 8),
-                        Text(
-                          currentTime, // Use dynamic time
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
+                  Card(
+                    color: const Color(0xFFF0EBE3), // Beige color
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.access_time),
+                          const SizedBox(width: 8),
+                          Text(
+                            currentTime, // Use dynamic time
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Expanded(

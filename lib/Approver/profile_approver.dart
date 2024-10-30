@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Login.dart';
+import 'package:project_mobileapp/Approver/history_approver.dart';
+import 'profile_approver.dart';
+import 'Dashboard_approver.dart';
+import 'booking_req.dart';
+import 'room_select.dart';
+import 'Home_approver.dart';
 
 class Profileapprover extends StatelessWidget {
   const Profileapprover({super.key});
@@ -17,6 +23,43 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Nav
+    int _selectedIndex = 4;
+    void _onDestinationSelected(int index) {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeApprover()),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const BookingReq()),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardApprover()),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HistoryApprover()),
+          );
+          break;
+        case 4:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Profileapprover()),
+          );
+          break;
+      }
+    }
+
     return Scaffold(
       body: Container(
         color: Colors.white, // Set the background color to full screen
@@ -128,6 +171,23 @@ class ProfilePage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      //Nav bar (bottom)
+      bottomNavigationBar: NavigationBar(
+        height: 60,
+        elevation: 0,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onDestinationSelected,
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(
+              icon: Icon(Icons.notifications), label: 'Request'),
+          NavigationDestination(
+              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
+          NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
+          NavigationDestination(
+              icon: Icon(Icons.account_circle), label: 'Profile'),
+        ],
       ),
     );
   }

@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:project_mobileapp/Login.dart';
+import 'package:project_mobileapp/Approver/history_approver.dart';
+import 'profile_approver.dart';
+import 'Dashboard_approver.dart';
+import 'booking_req.dart';
+import 'room_select.dart';
+import 'Home_approver.dart';
 
 class BookingReq extends StatefulWidget {
   const BookingReq({super.key});
@@ -15,6 +22,43 @@ class _BookingReqState extends State<BookingReq> {
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
+    //Nav
+    int _selectedIndex = 1;
+    void _onDestinationSelected(int index) {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeApprover()),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const BookingReq()),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardApprover()),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HistoryApprover()),
+          );
+          break;
+        case 4:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Profileapprover()),
+          );
+          break;
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Booking Requests'),
@@ -26,7 +70,7 @@ class _BookingReqState extends State<BookingReq> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
             children: [
               // Date and Time Row
@@ -35,8 +79,7 @@ class _BookingReqState extends State<BookingReq> {
                 children: [
                   // Date container
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       color: const Color.fromRGBO(240, 235, 227, 1),
                       borderRadius: BorderRadius.circular(10),
@@ -99,14 +142,18 @@ class _BookingReqState extends State<BookingReq> {
           ),
         ),
       ),
+      //Nav bar (bottom)
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
-        selectedIndex: 0,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.notifications), label: 'Status'),
+              icon: Icon(Icons.notifications), label: 'Request'),
+          NavigationDestination(
+              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
@@ -141,8 +188,8 @@ class BookingRequestCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
                 'assets/images/meeting.png',
-                width: 150,
-                height: 150,
+                width: 100,
+                height: 100,
                 fit: BoxFit.cover,
               ),
             ),
@@ -221,15 +268,15 @@ class BookingRequestCard extends StatelessWidget {
                         child: const Row(
                           children: [
                             Icon(Icons.close),
-                            SizedBox(width: 8),
+                            SizedBox(width: 4),
                             Text(
                               'N',
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 18),
+                      const SizedBox(width: 12),
                       ElevatedButton(
                         onPressed: () {
                           showDialog(
@@ -282,11 +329,11 @@ class BookingRequestCard extends StatelessWidget {
                         child: const Row(
                           children: [
                             Icon(Icons.check, color: Colors.white),
-                            SizedBox(width: 8),
+                            SizedBox(width: 4),
                             Text(
                               'Y',
                               style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
+                                  TextStyle(fontSize: 14, color: Colors.white),
                             ),
                           ],
                         ),

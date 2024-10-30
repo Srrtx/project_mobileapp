@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:project_mobileapp/Approver/history_approver.dart';
+import 'profile_approver.dart';
+import 'Dashboard_approver.dart';
+import 'booking_req.dart';
+import 'room_select.dart';
+import 'Home_approver.dart';
 
 class Roomselect extends StatefulWidget {
   const Roomselect({super.key});
@@ -22,6 +29,43 @@ class _RoomselectState extends State<Roomselect> {
     DateTime now = DateTime.now();
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+
+    //Nav
+    int _selectedIndex = 0;
+    void _onDestinationSelected(int index) {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeApprover()),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const BookingReq()),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardApprover()),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HistoryApprover()),
+          );
+          break;
+        case 4:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Profileapprover()),
+          );
+          break;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -204,15 +248,18 @@ class _RoomselectState extends State<Roomselect> {
           ),
         ),
       ),
+      //Nav bar (bottom)
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
         selectedIndex: _selectedIndex,
-        onDestinationSelected: _onItemTapped,
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.notifications), label: 'Status'),
+              icon: Icon(Icons.notifications), label: 'Request'),
+          NavigationDestination(
+              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
