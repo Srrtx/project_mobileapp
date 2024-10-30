@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'Homepage_staff.dart';
+import 'home_staff.dart';
 
 class AddRoom extends StatefulWidget {
   const AddRoom({super.key});
@@ -11,22 +9,9 @@ class AddRoom extends StatefulWidget {
 }
 
 class _AddRoomState extends State<AddRoom> {
-  File? _image;
-  final ImagePicker _picker = ImagePicker();
-  TextEditingController _controller1 = TextEditingController();
-  TextEditingController _controller2 = TextEditingController();
-  TextEditingController _controller3 = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-
-  Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-    }
-  }
+  final TextEditingController _controller1 = TextEditingController();
+  final TextEditingController _controller2 = TextEditingController();
+  final TextEditingController _controller3 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,24 +29,22 @@ class _AddRoomState extends State<AddRoom> {
           backgroundColor: Colors.white,
         ),
         backgroundColor: Colors.white,
-        bottomNavigationBar: Container(
-          child: const TabBar(
-            tabs: [
-              Tab(
-                icon: Icon(Icons.home_outlined),
-              ),
-              Tab(
-                icon: Icon(Icons.pie_chart_outline),
-              ),
-              Tab(
-                icon: Icon(Icons.access_time),
-              ),
-              Tab(
-                icon: Icon(Icons.person_outline),
-              ),
-            ],
-          ),
-        ),
+        // bottomNavigationBar: const TabBar(
+        //   tabs: [
+        //     Tab(
+        //       icon: Icon(Icons.home_outlined),
+        //     ),
+        //     Tab(
+        //       icon: Icon(Icons.pie_chart_outline),
+        //     ),
+        //     Tab(
+        //       icon: Icon(Icons.access_time),
+        //     ),
+        //     Tab(
+        //       icon: Icon(Icons.person_outline),
+        //     ),
+        //   ],
+        // ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -69,23 +52,7 @@ class _AddRoomState extends State<AddRoom> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: _pickImage,
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.grey[300],
-                      backgroundImage:
-                          _image != null ? FileImage(_image!) : null,
-                      child: _image == null
-                          ? Icon(
-                              Icons.camera_alt,
-                              color: Colors.grey[700],
-                              size: 50,
-                            )
-                          : null,
-                    ),
-                  ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   TextField(
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
@@ -97,7 +64,7 @@ class _AddRoomState extends State<AddRoom> {
                     ),
                     controller: _controller1,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextField(
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
@@ -109,23 +76,19 @@ class _AddRoomState extends State<AddRoom> {
                     ),
                     controller: _controller2,
                   ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       contentPadding: EdgeInsets.all(32.0),
-                      border: const OutlineInputBorder(),
+                      border: OutlineInputBorder(),
                       labelText: 'Detail',
-                      suffixIcon: IconButton(
-                        onPressed: _controller3.clear,
-                        icon: const Icon(Icons.clear),
-                      ),
+                      suffixIcon: null,
                     ),
                     controller: _controller3,
                     maxLines: null,
-                    scrollController: _scrollController,
                     keyboardType: TextInputType.multiline,
                   ),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -134,33 +97,33 @@ class _AddRoomState extends State<AddRoom> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => HomepageStaff(),
+                              builder: (context) => const HomeStaff(),
                             ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey,
-                          fixedSize: Size(100, 60),
+                          fixedSize: const Size(100, 60),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15)),
                         ),
-                        child: Text(
+                        child: const Text(
                           'Cancel',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          //
+                          // Add room logic can go here
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
-                          fixedSize: Size(100, 60),
+                          fixedSize: const Size(100, 60),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
                         ),
-                        child: Text(
+                        child: const Text(
                           'Add',
                           style: TextStyle(color: Colors.white),
                         ),

@@ -1,6 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'Homepage_staff.dart';
+import 'Dashboard_staff.dart';
+import 'history_staff.dart';
+import 'profile_staff.dart';
 
 class EditRoom extends StatefulWidget {
   const EditRoom({super.key});
@@ -10,13 +12,18 @@ class EditRoom extends StatefulWidget {
 }
 
 class _EditRoomState extends State<EditRoom> {
+  // Nav
+  int _selectedIndex = 1;
+
+  // For date and time display
   String _date = '';
   String _time = '';
-  bool sw = false;
+  bool sw = true;
 
+  // Function to toggle switch
   void toggleSwitch(bool? status) {
     setState(() {
-      sw = status!;
+      sw = status ?? false;
     });
   }
 
@@ -24,7 +31,8 @@ class _EditRoomState extends State<EditRoom> {
   void initState() {
     super.initState();
     _updateTime();
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => _updateTime());
+    // Updating the time every second
+    // Timer.periodic(const Duration(seconds: 1), (Timer t) => _updateTime());
   }
 
   // Get current time
@@ -36,23 +44,61 @@ class _EditRoomState extends State<EditRoom> {
     });
   }
 
-  // Show date
+  // Show date picker and update selected date
   void showDate() async {
     DateTime? dt = await showDatePicker(
       context: context,
+      initialDate: DateTime.now(),
       firstDate: DateTime(2024, 1, 1),
       lastDate: DateTime(2024, 12, 31),
     );
     if (dt != null) {
       setState(() {
-        // _date = dt.toString();
         _date = '${dt.day}/${dt.month}/${dt.year}';
       });
     }
   }
 
+  // Navigation logic
+  void _onDestinationSelected(int index) {
+    if (index != _selectedIndex) {
+      setState(() {
+        _selectedIndex = index;
+      });
+
+      switch (index) {
+        case 0:
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomepageStaff()),
+          );
+          break;
+        case 1:
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardStaff()),
+          );
+          break;
+        case 2:
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HistoryStaff()),
+          );
+          break;
+        case 3:
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileStaff()),
+          );
+          break;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final double buttonWidth = MediaQuery.of(context).size.width * 0.9;
+
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -68,30 +114,21 @@ class _EditRoomState extends State<EditRoom> {
         ),
         backgroundColor: Colors.white,
 
-        //Tab Bar
-        bottomNavigationBar: Container(
-          child: const TabBar(
-            tabs: [
-              Tab(
-                icon: Icon(Icons.home_outlined),
-              ),
-              Tab(
-                icon: Icon(Icons.pie_chart_outline),
-              ),
-              Tab(
-                icon: Icon(Icons.access_time),
-              ),
-              Tab(
-                icon: Icon(Icons.person_outline),
-              ),
-            ],
-          ),
-        ),
+        // // Tab Bar
+        // bottomNavigationBar: const TabBar(
+        //   tabs: [
+        //     Tab(icon: Icon(Icons.home_outlined)),
+        //     Tab(icon: Icon(Icons.pie_chart_outline)),
+        //     Tab(icon: Icon(Icons.access_time)),
+        //     Tab(icon: Icon(Icons.person_outline)),
+        //   ],
+        // ),
 
+        // Body Content
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(32.0),
+              padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: [
                   Row(
@@ -99,15 +136,15 @@ class _EditRoomState extends State<EditRoom> {
                       ElevatedButton.icon(
                         onPressed: showDate,
                         label: Text(
-                          '$_date',
-                          style: TextStyle(color: Colors.black),
+                          _date.isEmpty ? 'Select Date' : _date,
+                          style: const TextStyle(color: Colors.black),
                         ),
                         icon: const Icon(
                           Icons.calendar_today,
                           color: Colors.black,
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFF3F3E0),
+                          backgroundColor: const Color(0xFFF3F3E0),
                         ),
                       ),
                       const Spacer(),
@@ -115,21 +152,19 @@ class _EditRoomState extends State<EditRoom> {
                         onPressed: () {},
                         label: Text(
                           _time,
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                         ),
                         icon: const Icon(
                           Icons.access_time,
                           color: Colors.black,
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFF3F3E0),
+                          backgroundColor: const Color(0xFFF3F3E0),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -144,15 +179,20 @@ class _EditRoomState extends State<EditRoom> {
                   ),
                   Column(
                     children: [
-                      //Meeting rooom 1
                       Center(
-                        child: Image.asset('assets/images/meeting_room.png'),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            'assets/images/meeting.png',
+                            height: 230,
+                            width: 230,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                      SizedBox(
-                        height: 40,
-                      ),
+                      const SizedBox(height: 20),
 
-                      //Time 08:00 - 10:00
+                      // Time Slot Buttons
                       ElevatedButton.icon(
                         onPressed: () {},
                         label: Row(
@@ -164,22 +204,20 @@ class _EditRoomState extends State<EditRoom> {
                                   .bodyLarge!
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
-                            Spacer(),
-                            Text(''),
+                            const Spacer(),
                           ],
                         ),
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(500, 65),
+                          minimumSize: Size(buttonWidth, 65),
                           backgroundColor: Colors.grey[350],
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          shadowColor: Color.fromARGB(150, 94, 93, 93),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          shadowColor: const Color.fromARGB(150, 94, 93, 93),
                           elevation: 3,
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
 
                       ElevatedButton.icon(
                         onPressed: () {},
@@ -192,31 +230,32 @@ class _EditRoomState extends State<EditRoom> {
                                   .bodyLarge!
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             TextButton.icon(
                               onPressed: () {},
-                              label: Text('Reserved'),
+                              label: const Text('Reserved'),
+                              icon: const Icon(Icons.lock),
                               style: TextButton.styleFrom(
                                 side: const BorderSide(
-                                    color: Color.fromARGB(100, 137, 121, 255),
-                                    width: 1),
+                                  color: Color.fromARGB(100, 137, 121, 255),
+                                  width: 1,
+                                ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(500, 65),
-                          backgroundColor: Color.fromARGB(100, 137, 121, 255),
+                          minimumSize: Size(buttonWidth, 65),
+                          backgroundColor:
+                              const Color.fromARGB(100, 137, 121, 255),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          shadowColor: Color.fromARGB(150, 94, 93, 93),
+                          shadowColor: const Color.fromARGB(150, 94, 93, 93),
                           elevation: 3,
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
 
                       ElevatedButton.icon(
                         onPressed: () {},
@@ -229,30 +268,30 @@ class _EditRoomState extends State<EditRoom> {
                                   .bodyLarge!
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             TextButton.icon(
                               onPressed: () {},
-                              label: Text('Free'),
+                              label: const Text('Free'),
+                              icon: const Icon(Icons.check),
                               style: TextButton.styleFrom(
                                 side: const BorderSide(
                                     color: Colors.green, width: 1),
                               ),
-                            )
+                            ),
                           ],
                         ),
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(500, 65),
-                          backgroundColor: Color.fromARGB(130, 59, 160, 81),
+                          minimumSize: Size(buttonWidth, 65),
+                          backgroundColor:
+                              const Color.fromARGB(130, 59, 160, 81),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          shadowColor: Color.fromARGB(150, 94, 93, 93),
+                          shadowColor: const Color.fromARGB(150, 94, 93, 93),
                           elevation: 3,
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
 
                       ElevatedButton.icon(
                         onPressed: () {},
@@ -265,30 +304,30 @@ class _EditRoomState extends State<EditRoom> {
                                   .bodyLarge!
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             TextButton.icon(
                               onPressed: () {},
-                              label: Text('Free'),
+                              label: const Text('Free'),
+                              icon: const Icon(Icons.check),
                               style: TextButton.styleFrom(
                                 side: const BorderSide(
                                     color: Colors.green, width: 1),
                               ),
-                            )
+                            ),
                           ],
                         ),
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(500, 65),
-                          backgroundColor: Color.fromARGB(130, 59, 160, 81),
+                          minimumSize: Size(buttonWidth, 65),
+                          backgroundColor:
+                              const Color.fromARGB(130, 59, 160, 81),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          shadowColor: Color.fromARGB(150, 94, 93, 93),
+                          shadowColor: const Color.fromARGB(150, 94, 93, 93),
                           elevation: 3,
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ],
@@ -296,6 +335,21 @@ class _EditRoomState extends State<EditRoom> {
             ),
           ),
         ),
+
+        // // Bottom Navigation Bar
+        // bottomNavigationBar: NavigationBar(
+        //   height: 60,
+        //   elevation: 0,
+        //   selectedIndex: _selectedIndex,
+        //   onDestinationSelected: _onDestinationSelected,
+        //   destinations: const [
+        //     NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+        //     NavigationDestination(
+        //         icon: Icon(Icons.pie_chart), label: 'Dashboard'),
+        //     NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
+        //     NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+        //   ],
+        // ),
       ),
     );
   }
