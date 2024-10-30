@@ -8,193 +8,212 @@ class Roomselect extends StatefulWidget {
 }
 
 class _RoomselectState extends State<Roomselect> {
+  int _selectedIndex = 0; // Track the selected index for the navigation bar
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Get the current date and time
+    DateTime now = DateTime.now();
+    String currentDate = '${now.day}/${now.month}/${now.year}';
+    String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         title: const Text(
-          'Meeting Room 1',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          'Meeting Room1',
         ),
-        leading: null, // Remove the leading back button from the AppBar
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+        ),
+        centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Card(
-                      color: Color(0xFFF0EBE3),
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Icon(Icons.calendar_today),
-                            SizedBox(width: 8),
-                            Text(
-                              '21/10/24',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Date and Time Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Date container
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 235, 227, 1),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    Card(
-                      color: Color(0xFFF0EBE3),
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Icon(Icons.access_time),
-                            SizedBox(width: 8),
-                            Text(
-                              '10:42',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                    child: Row(
+                      children: [
+                        const Icon(Icons.calendar_today, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          currentDate,
+                          style: const TextStyle(fontSize: 16),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Center(
-              child: Image.asset(
-                'assets/meeting.png',
-                width: 200,
-                height: 200,
-                fit: BoxFit.cover,
+                  ),
+                  // Time container
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 235, 227, 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.access_time, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          currentTime,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 16),
-            const BookingSlot(
-              time: '08:00-10:00',
-              status: '',
-              color: Colors.grey,
-            ),
-            const BookingSlot(
-              time: '10:00-12:00',
-              status: 'Reserved',
-              color: Color(0xFF8979FF),
-            ),
-            BookingSlot(
-              time: '13:00-15:00',
-              status: 'Free',
-              color: Colors.green,
-              onFreeTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor:
-                          const Color(0xFFF0EBE3), // Set background color
-                      title: const Text('Meeting Room 1'),
-                      content: const Text('Time : 13:00-15:00'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            'Cancel',
-                            style: TextStyle(
-                                color: Colors.black), // Cancel text color
+              const SizedBox(height: 16), // Space between time and room slots
+
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'assets/images/meeting.png',
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const BookingSlot(
+                time: '08:00-10:00',
+                status: '',
+                color: Colors.grey,
+              ),
+              const BookingSlot(
+                time: '10:00-12:00',
+                status: 'Reserved',
+                color: Color(0xFF8979FF),
+              ),
+              BookingSlot(
+                time: '13:00-15:00',
+                status: 'Free',
+                color: Colors.green,
+                onFreeTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor:
+                            const Color(0xFFF0EBE3), // Set background color
+                        title: const Text('Meeting Room 1'),
+                        content: const Text('Time : 13:00-15:00'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Cancel',
+                              style: TextStyle(
+                                  color: Colors.black), // Cancel text color
+                            ),
                           ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Add booking logic here
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black, // Button color
+                          ElevatedButton(
+                            onPressed: () {
+                              // Add booking logic here
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black, // Button color
+                            ),
+                            child: const Text(
+                              'Book',
+                              style: TextStyle(
+                                  color: Colors.white), // Book text color
+                            ),
                           ),
-                          child: const Text(
-                            'Book',
-                            style: TextStyle(
-                                color: Colors.white), // Book text color
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+              BookingSlot(
+                time: '15:00-17:00',
+                status: 'Free',
+                color: Colors.green,
+                onFreeTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor:
+                            const Color(0xFFF0EBE3), // Set background color
+                        title: const Text('Meeting Room 1'),
+                        content: const Text('Time : 15:00-17:00'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Cancel',
+                              style: TextStyle(
+                                  color: Colors.black), // Cancel text color
+                            ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-            BookingSlot(
-              time: '15:00-17:00',
-              status: 'Free',
-              color: Colors.green,
-              onFreeTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor:
-                          const Color(0xFFF0EBE3), // Set background color
-                      title: const Text('Meeting Room 1'),
-                      content: const Text('Time : 15:00-17:00'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            'Cancel',
-                            style: TextStyle(
-                                color: Colors.black), // Cancel text color
+                          ElevatedButton(
+                            onPressed: () {
+                              // Add booking logic here
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                            ),
+                            child: const Text(
+                              'Book',
+                              style: TextStyle(
+                                  color: Colors.white), // Book text color
+                            ),
                           ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Add booking logic here
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                          ),
-                          child: const Text(
-                            'Book',
-                            style: TextStyle(
-                                color: Colors.white), // Book text color
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-          ],
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '',
-          ),
+      bottomNavigationBar: NavigationBar(
+        height: 60,
+        elevation: 0,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(
+              icon: Icon(Icons.notifications), label: 'Status'),
+          NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
+          NavigationDestination(
+              icon: Icon(Icons.account_circle), label: 'Profile'),
         ],
       ),
     );

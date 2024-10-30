@@ -47,7 +47,8 @@ class _HomeUserState extends State<HomeUser> {
                         const SizedBox(width: 8),
                         Text(
                           currentDate,
-                          style: const TextStyle(fontSize: 16),
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -66,7 +67,8 @@ class _HomeUserState extends State<HomeUser> {
                         const SizedBox(width: 8),
                         Text(
                           currentTime,
-                          style: const TextStyle(fontSize: 16),
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
