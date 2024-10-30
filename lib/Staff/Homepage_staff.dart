@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'Edit_room.dart';
+import 'edit_room.dart';
 import 'package:flutter/material.dart';
-import 'Add_room.dart';
+import 'add_room.dart';
 
 class HomepageStaff extends StatefulWidget {
   const HomepageStaff({super.key});
