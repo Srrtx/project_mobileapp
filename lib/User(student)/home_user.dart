@@ -19,7 +19,7 @@ class _HomeState extends State<HomeUser> {
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
-    //Nav
+//Nav
     int _selectedIndex = 0;
     void _onDestinationSelected(int index) {
       switch (index) {
@@ -32,7 +32,7 @@ class _HomeState extends State<HomeUser> {
         case 1:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const Status_check()),
+            MaterialPageRoute(builder: (context) => const CheckStatus()),
           );
           break;
         case 2:
@@ -62,44 +62,46 @@ class _HomeState extends State<HomeUser> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Card(
-                  color: const Color(0xFFF0EBE3), // Beige color
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.calendar_today),
-                        const SizedBox(width: 8),
-                        Text(
-                          currentDate, // Use dynamic date
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Card(
+                    color: const Color(0xFFF0EBE3), // Beige color
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.calendar_today),
+                          const SizedBox(width: 8),
+                          Text(
+                            currentDate, // Use dynamic date
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Card(
-                  color: const Color(0xFFF0EBE3), // Beige color
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.access_time),
-                        const SizedBox(width: 8),
-                        Text(
-                          currentTime, // Use dynamic time
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
+                  Card(
+                    color: const Color(0xFFF0EBE3), // Beige color
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.access_time),
+                          const SizedBox(width: 8),
+                          Text(
+                            currentTime, // Use dynamic time
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Expanded(

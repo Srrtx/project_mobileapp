@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'home_user.dart';
+import 'Check_status.dart';
+import 'Profile_user.dart';
+import 'Profile_user.dart';
 
 class HistoryUser extends StatelessWidget {
   const HistoryUser({super.key});
@@ -9,6 +13,37 @@ class HistoryUser extends StatelessWidget {
     DateTime now = DateTime.now();
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+
+    //Nav
+    int _selectedIndex = 2;
+    void _onDestinationSelected(int index) {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeUser()),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const CheckStatus()),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HistoryUser()),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileUser()),
+          );
+          break;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -108,17 +143,16 @@ class HistoryUser extends StatelessWidget {
           ),
         ),
       ),
-      // Nav bar (bottom)
+      //Nav bar (bottom)
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
-        selectedIndex: 3,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.notifications), label: 'Status'),
-          NavigationDestination(
-              icon: Icon(Icons.dashboard), label: 'Dashboard'),
+              icon: Icon(Icons.notifications), label: 'Request'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
@@ -175,12 +209,12 @@ class RoomSlot extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       child: Image.asset(
                         imagePath,
-                        width: 130,
-                        height: 130,
+                        width: 100,
+                        height: 100,
                         fit: BoxFit.cover,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 14),
                     // Room info section
                     Expanded(
                       child: Column(
@@ -189,30 +223,30 @@ class RoomSlot extends StatelessWidget {
                           Text(
                             roomName,
                             style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 4),
                           Text(
-                            ' $date',
+                            '$date',
                             style: const TextStyle(
-                                fontSize: 16, color: Colors.black),
+                                fontSize: 14, color: Colors.black),
                           ),
                           Text(
                             'Time: $time',
                             style: const TextStyle(
-                                fontSize: 16, color: Colors.black),
+                                fontSize: 14, color: Colors.black),
                           ),
                           Text(
                             'Booked: $user',
                             style: const TextStyle(
-                                fontSize: 16, color: Colors.black),
+                                fontSize: 14, color: Colors.black),
                           ),
                           Text(
                             'Approver: $approver',
                             style: const TextStyle(
-                                fontSize: 16, color: Colors.black),
+                                fontSize: 14, color: Colors.black),
                           ),
                         ],
                       ),
@@ -220,25 +254,24 @@ class RoomSlot extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 3),
-                // Approver/Disapprover button display
+                // Approve/Disapprove display
                 Align(
-                  alignment: Alignment.centerRight, // Move button to the right
+                  alignment:
+                      Alignment.centerRight, // Move container to the right
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        right: 40.0), // Adjust padding to fine-tune position
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isApproved
+                        right: 10.0), // Adjust padding to fine-tune position
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isApproved
                             ? Colors.green
                             : Colors.red, // Fixed color based on approval
-                        minimumSize: const Size(90, 35), // Adjust button size
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(10), // Rounder button
-                        ),
+                        borderRadius:
+                            BorderRadius.circular(10), // Rounded container
                       ),
-                      // Remove onPressed to make button unclickable
-                      onPressed: () {},
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 2,
+                          horizontal: 8), // Adjust padding to match button size
                       child: Text(
                         isApproved ? 'Approved' : 'Disapproved',
                         style: const TextStyle(color: Colors.white),
