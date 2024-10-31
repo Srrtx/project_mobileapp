@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:project_mobileapp/Login.dart';
+import 'package:project_mobileapp/Staff/Homepage_staff.dart';
+import 'package:project_mobileapp/Staff/home_staff.dart';
+import 'package:project_mobileapp/User(student)/home.dart';
+import 'package:project_mobileapp/User(student)/home_user.dart';
+import 'Approver/booking_req.dart';
+import 'Approver/Home_approver.dart';
 
 void main() {
   runApp(MaterialApp(
-<<<<<<< HEAD
     home: HomeApprover(),
-=======
-    home: Login(),
->>>>>>> bee20d4ff44108d7c31269afa1d361f70e5dd144
     // theme: ThemeData(),
-    debugShowCheckedModeBanner: false,
+    debugShowCheckedModeBanner: true,
   ));
 }
 // hi

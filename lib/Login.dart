@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Register.dart';
 
-class Login extends StatelessWidget {
-  const Login({super.key});
+class LoginApp extends StatelessWidget {
+  const LoginApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,7 @@ class LoginPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Register()),
+                              builder: (context) => const RegisterPage()),
                         );
                       },
                       child: Text(
@@ -129,5 +129,5 @@ class LoginPage extends StatelessWidget {
 }
 
 void main() {
-  runApp(const Login());
+  runApp(const LoginApp());
 }

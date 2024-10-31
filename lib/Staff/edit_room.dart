@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Staff/home_staff.dart';
 import 'Homepage_staff.dart';
@@ -356,5 +355,3 @@ class _EditRoomState extends State<EditRoom> {
     );
   }
 }
-=======
->>>>>>> bee20d4ff44108d7c31269afa1d361f70e5dd144

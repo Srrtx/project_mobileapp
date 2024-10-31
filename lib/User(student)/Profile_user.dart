@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Login.dart';
-import 'package:project_mobileapp/Staff/home_staff.dart';
-import 'Homepage_staff.dart';
-import 'Dashboard_staff.dart';
-import 'history_staff.dart';
+import 'package:project_mobileapp/User(student)/Check_status.dart';
+import 'package:project_mobileapp/User(student)/History_user.dart';
 
-class ProfileStaff extends StatelessWidget {
-  const ProfileStaff({super.key});
+import 'package:project_mobileapp/User(student)/home.dart';
+import 'package:project_mobileapp/User(student)/home_user.dart';
+
+class ProfileUser extends StatelessWidget {
+  const ProfileUser({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,69 +19,55 @@ class ProfileStaff extends StatelessWidget {
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
-<<<<<<< HEAD:lib/Staff/profile_staff.dart
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   int _selectedIndex = 3;
 
   void _onDestinationSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
     switch (index) {
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeStaff()),
+          MaterialPageRoute(builder: (context) => const HomeUser()),
         );
         break;
       case 1:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const DashboardStaff()),
+          MaterialPageRoute(builder: (context) => const CheckstatusUser()),
         );
         break;
       case 2:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HistoryStaff()),
+          MaterialPageRoute(builder: (context) => const HistoryUser()),
         );
         break;
       case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfileStaff()),
-        );
         break;
     }
   }
-=======
->>>>>>> bee20d4ff44108d7c31269afa1d361f70e5dd144:lib/Staff/profile.dart
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Your Profile'), // เพิ่มหัวข้อที่นี่
+      ),
       body: Container(
-        color: Colors.white,
+        color: Colors.white, // ตั้งค่าสีพื้นหลังให้เต็มหน้าจอ
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Your Profile',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Color(0xFFF0EBE3),
+                  color: Color(0xFFF0EBE3), // สีพื้นหลังของกล่องโปรไฟล์
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -95,12 +82,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         backgroundImage:
                             AssetImage('assets/images/Profile.png'),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 20),
                       Text(
                         'J',
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 20),
                       Align(
@@ -165,14 +151,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Container(),
-              ),
+              Expanded(child: Container()), // ส่วนที่เหลือของหน้าจอ
             ],
           ),
         ),
       ),
-<<<<<<< HEAD:lib/Staff/profile_staff.dart
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
@@ -181,18 +164,16 @@ class _ProfilePageState extends State<ProfilePage> {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
+              icon: Icon(Icons.notifications), label: 'Status'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
         ],
       ),
-=======
->>>>>>> bee20d4ff44108d7c31269afa1d361f70e5dd144:lib/Staff/profile.dart
     );
   }
 }
 
 void main() {
-  runApp(const ProfileStaff());
+  runApp(const ProfileUser());
 }

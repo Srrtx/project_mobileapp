@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'Dashboard_staff.dart';
+import 'history_staff.dart';
+import 'profile_staff.dart';
+import 'add_room.dart';
+import 'edit_room.dart';
 
 class HomeStaff extends StatefulWidget {
   const HomeStaff({super.key});
@@ -27,6 +32,37 @@ class _HomeStaffState extends State<HomeStaff> {
     DateTime now = DateTime.now();
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+
+    //Nav
+    int _selectedIndex = 0;
+    void _onDestinationSelected(int index) {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeStaff()),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardStaff()),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HistoryStaff()),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileStaff()),
+          );
+          break;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -96,12 +132,19 @@ class _HomeStaffState extends State<HomeStaff> {
                   itemCount: rooms.length,
                   itemBuilder: (context, index) {
                     return RoomSlot(
-                      roomName: rooms[index].name,
-                      roomNumber: rooms[index].number,
-                      imagePath: rooms[index].imagePath,
-                      occupancy: rooms[index].occupancy,
-                      details: rooms[index].details,
-                    );
+                        roomName: rooms[index].name,
+                        roomNumber: rooms[index].number,
+                        imagePath: rooms[index].imagePath,
+                        occupancy: rooms[index].occupancy,
+                        details: rooms[index].details,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditRoom(),
+                            ),
+                          );
+                        });
                   },
                 ),
               ),
@@ -109,14 +152,16 @@ class _HomeStaffState extends State<HomeStaff> {
           ),
         ),
       ),
+      //Nav bar (bottom)
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
-        selectedIndex: 0,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.notifications), label: 'Status'),
+              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
@@ -124,8 +169,12 @@ class _HomeStaffState extends State<HomeStaff> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddRoom()),
+          );
           // Action to add a room
-          _showAddRoomDialog(context);
+          // _showAddRoomDialog(context);
         },
         child: const Icon(Icons.add),
         backgroundColor: const Color.fromARGB(255, 104, 104, 104),
@@ -203,7 +252,10 @@ class _HomeStaffState extends State<HomeStaff> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const AddRoom()),
+                // ); // Close the dialog
               },
               child: const Text('Close'),
             ),
@@ -230,7 +282,8 @@ class RoomSlot extends StatelessWidget {
   final String roomNumber;
   final String imagePath;
   final String occupancy;
-  final String details;
+  final String details; // Include details for editing
+  final VoidCallback onTap; // Add onTap callback
 
   const RoomSlot({
     Key? key,
@@ -239,58 +292,62 @@ class RoomSlot extends StatelessWidget {
     required this.imagePath,
     required this.occupancy,
     required this.details,
+    required this.onTap, // Accept onTap as a parameter
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: const Color.fromRGBO(240, 235, 227, 1),
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Container(
-        height: 120, // Larger height for the card
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            // Image with larger size
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                imagePath,
-                width: 100,
-                height: 100, // Increased image size
-                fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: onTap, // Trigger the onTap callback
+      child: Card(
+        color: const Color.fromRGBO(240, 235, 227, 1),
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Container(
+          height: 120, // Larger height for the card
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              // Image with larger size
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  imagePath,
+                  width: 100,
+                  height: 100, // Increased image size
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            const SizedBox(width: 16), // Space between image and text
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '$roomName $roomNumber',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+              const SizedBox(width: 16), // Space between image and text
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '$roomName $roomNumber',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '$occupancy',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
+                    const SizedBox(height: 4),
+                    Text(
+                      '$occupancy',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                ],
+                    const SizedBox(height: 4),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
