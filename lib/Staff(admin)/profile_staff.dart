@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Login.dart';
-import 'package:project_mobileapp/Staff/home_staff.dart';
-import 'Homepage_staff.dart';
+import 'package:project_mobileapp/Staff(admin)/home_staff.dart';
 import 'Dashboard_staff.dart';
 import 'history_staff.dart';
 

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Approver/history_approver.dart';
 import 'profile_approver.dart';
 import 'Dashboard_approver.dart';
 import 'booking_req.dart';
-import 'room_select.dart';
 import 'Home_approver.dart';
 
 class Roomselect extends StatefulWidget {
@@ -15,14 +13,6 @@ class Roomselect extends StatefulWidget {
 }
 
 class _RoomselectState extends State<Roomselect> {
-  int _selectedIndex = 0; // Track the selected index for the navigation bar
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // Get the current date and time

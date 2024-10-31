@@ -12,14 +12,6 @@ class RoomSelect extends StatefulWidget {
 }
 
 class _RoomselectState extends State<RoomSelect> {
-  int _selectedIndex = 0; // Track the selected index for the navigation bar
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // Get the current date and time

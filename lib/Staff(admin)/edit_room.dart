@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project_mobileapp/Staff/home_staff.dart';
-import 'Homepage_staff.dart';
-import 'Dashboard_staff.dart';
-import 'history_staff.dart';
-import 'profile_staff.dart';
 
 class EditRoom extends StatefulWidget {
   const EditRoom({super.key});
@@ -13,12 +8,6 @@ class EditRoom extends StatefulWidget {
 }
 
 class _EditRoomState extends State<EditRoom> {
-  // Nav
-  int _selectedIndex = 1;
-
-  // For date and time display
-  String _date = '';
-  String _time = '';
   bool sw = true;
 
   // Function to toggle switch
@@ -29,76 +18,12 @@ class _EditRoomState extends State<EditRoom> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _updateTime();
-    // Updating the time every second
-    // Timer.periodic(const Duration(seconds: 1), (Timer t) => _updateTime());
-  }
-
-  // Get current time
-  void _updateTime() {
-    final now = DateTime.now();
-    setState(() {
-      _time =
-          '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
-    });
-  }
-
-  // Show date picker and update selected date
-  void showDate() async {
-    DateTime? dt = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2024, 1, 1),
-      lastDate: DateTime(2024, 12, 31),
-    );
-    if (dt != null) {
-      setState(() {
-        _date = '${dt.day}/${dt.month}/${dt.year}';
-      });
-    }
-  }
-
-  // Navigation logic
-  void _onDestinationSelected(int index) {
-    if (index != _selectedIndex) {
-      setState(() {
-        _selectedIndex = index;
-      });
-
-      switch (index) {
-        case 0:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeStaff()),
-          );
-          break;
-        case 1:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const DashboardStaff()),
-          );
-          break;
-        case 2:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const HistoryStaff()),
-          );
-          break;
-        case 3:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ProfileStaff()),
-          );
-          break;
-      }
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     final double buttonWidth = MediaQuery.of(context).size.width * 0.9;
+    // Get the current date and time
+    DateTime now = DateTime.now();
+    String currentDate = '${now.day}/${now.month}/${now.year}';
+    String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
     return DefaultTabController(
       length: 4,
@@ -114,17 +39,6 @@ class _EditRoomState extends State<EditRoom> {
           backgroundColor: Colors.white,
         ),
         backgroundColor: Colors.white,
-
-        // // Tab Bar
-        // bottomNavigationBar: const TabBar(
-        //   tabs: [
-        //     Tab(icon: Icon(Icons.home_outlined)),
-        //     Tab(icon: Icon(Icons.pie_chart_outline)),
-        //     Tab(icon: Icon(Icons.access_time)),
-        //     Tab(icon: Icon(Icons.person_outline)),
-        //   ],
-        // ),
-
         // Body Content
         body: SafeArea(
           child: SingleChildScrollView(
@@ -132,35 +46,46 @@ class _EditRoomState extends State<EditRoom> {
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: [
+                  // Date and Time Row
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton.icon(
-                        onPressed: showDate,
-                        label: Text(
-                          _date.isEmpty ? 'Select Date' : _date,
-                          style: const TextStyle(color: Colors.black),
+                      // Date container
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(240, 235, 227, 1),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        icon: const Icon(
-                          Icons.calendar_today,
-                          color: Colors.black,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFF3F3E0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.calendar_today, size: 18),
+                            const SizedBox(width: 8),
+                            Text(
+                              currentDate,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
                         ),
                       ),
-                      const Spacer(),
-                      ElevatedButton.icon(
-                        onPressed: () {},
-                        label: Text(
-                          _time,
-                          style: const TextStyle(color: Colors.black),
+                      // Time container
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(240, 235, 227, 1),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        icon: const Icon(
-                          Icons.access_time,
-                          color: Colors.black,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFF3F3E0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.access_time, size: 18),
+                            const SizedBox(width: 8),
+                            Text(
+                              currentTime,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -214,12 +139,10 @@ class _EditRoomState extends State<EditRoom> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          shadowColor: const Color.fromARGB(150, 94, 93, 93),
                           elevation: 3,
                         ),
                       ),
                       const SizedBox(height: 10),
-
                       ElevatedButton.icon(
                         onPressed: () {},
                         label: Row(
@@ -235,7 +158,7 @@ class _EditRoomState extends State<EditRoom> {
                             TextButton.icon(
                               onPressed: () {},
                               label: const Text('Reserved'),
-                              icon: const Icon(Icons.lock),
+                              // icon: const Icon(Icons.lock),
                               style: TextButton.styleFrom(
                                 side: const BorderSide(
                                   color: Color.fromARGB(100, 137, 121, 255),
@@ -252,7 +175,6 @@ class _EditRoomState extends State<EditRoom> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          shadowColor: const Color.fromARGB(150, 94, 93, 93),
                           elevation: 3,
                         ),
                       ),
@@ -288,7 +210,6 @@ class _EditRoomState extends State<EditRoom> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          shadowColor: const Color.fromARGB(150, 94, 93, 93),
                           elevation: 3,
                         ),
                       ),
@@ -324,7 +245,6 @@ class _EditRoomState extends State<EditRoom> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          shadowColor: const Color.fromARGB(150, 94, 93, 93),
                           elevation: 3,
                         ),
                       ),
@@ -336,21 +256,6 @@ class _EditRoomState extends State<EditRoom> {
             ),
           ),
         ),
-
-        // // Bottom Navigation Bar
-        // bottomNavigationBar: NavigationBar(
-        //   height: 60,
-        //   elevation: 0,
-        //   selectedIndex: _selectedIndex,
-        //   onDestinationSelected: _onDestinationSelected,
-        //   destinations: const [
-        //     NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-        //     NavigationDestination(
-        //         icon: Icon(Icons.pie_chart), label: 'Dashboard'),
-        //     NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
-        //     NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
-        //   ],
-        // ),
       ),
     );
   }

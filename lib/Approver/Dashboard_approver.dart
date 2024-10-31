@@ -116,7 +116,6 @@ class DashboardApproved extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16), // Space between time and dashboard
-
               // Dashboard Section
               Expanded(
                 child: SingleChildScrollView(
@@ -125,7 +124,7 @@ class DashboardApproved extends StatelessWidget {
                       // Wrap each DashboardCard in a Container to set size
                       Container(
                         width: double.infinity, // Full width
-                        height: 120, // Adjust height as needed
+                        height: 150, // Adjust height as needed
                         child: DashboardCard(
                           title: 'All Room',
                           count: allroom,
@@ -136,18 +135,18 @@ class DashboardApproved extends StatelessWidget {
                       const SizedBox(height: 8), // Space between cards
                       Container(
                         width: double.infinity,
-                        height: 120,
+                        height: 150,
                         child: DashboardCard(
-                          title: 'Disabled',
-                          count: disabled,
-                          color: const Color.fromARGB(255, 228, 105, 98),
-                          icon: Icons.close,
+                          title: 'Free',
+                          count: free,
+                          color: const Color.fromARGB(134, 121, 255, 177),
+                          icon: Icons.done,
                         ),
                       ),
                       const SizedBox(height: 8), // Space between cards
                       Container(
                         width: double.infinity,
-                        height: 120,
+                        height: 150,
                         child: DashboardCard(
                           title: 'Pending',
                           count: pending,
@@ -156,14 +155,15 @@ class DashboardApproved extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8), // Space between cards
+
                       Container(
                         width: double.infinity,
-                        height: 120,
+                        height: 150,
                         child: DashboardCard(
-                          title: 'Free',
-                          count: free,
-                          color: const Color.fromARGB(134, 121, 255, 177),
-                          icon: Icons.done,
+                          title: 'Disabled',
+                          count: disabled,
+                          color: const Color.fromARGB(255, 228, 105, 98),
+                          icon: Icons.close,
                         ),
                       ),
                     ],

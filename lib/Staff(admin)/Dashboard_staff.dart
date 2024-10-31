@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_mobileapp/Staff/home_staff.dart';
-import 'Homepage_staff.dart';
+import 'package:project_mobileapp/Staff(admin)/home_staff.dart';
 import 'history_staff.dart';
 import 'profile_staff.dart';
 
@@ -127,18 +126,18 @@ class DashboardStaff extends StatelessWidget {
                           icon: Icons.show_chart,
                         ),
                       ),
-                      const SizedBox(height: 16), // Space between cards
+                      const SizedBox(height: 8), // Space between cards
                       Container(
                         width: double.infinity,
                         height: 150,
                         child: DashboardCard(
-                          title: 'Disabled',
-                          count: disabled,
-                          color: const Color.fromARGB(255, 228, 105, 98),
-                          icon: Icons.close,
+                          title: 'Free',
+                          count: free,
+                          color: const Color.fromARGB(134, 121, 255, 177),
+                          icon: Icons.done,
                         ),
                       ),
-                      const SizedBox(height: 16), // Space between cards
+                      const SizedBox(height: 8), // Space between cards
                       Container(
                         width: double.infinity,
                         height: 150,
@@ -149,15 +148,16 @@ class DashboardStaff extends StatelessWidget {
                           icon: Icons.stream,
                         ),
                       ),
-                      const SizedBox(height: 16), // Space between cards
+                      const SizedBox(height: 8), // Space between cards
+
                       Container(
                         width: double.infinity,
                         height: 150,
                         child: DashboardCard(
-                          title: 'Free',
-                          count: free,
-                          color: const Color.fromARGB(134, 121, 255, 177),
-                          icon: Icons.done,
+                          title: 'Disabled',
+                          count: disabled,
+                          color: const Color.fromARGB(255, 228, 105, 98),
+                          icon: Icons.close,
                         ),
                       ),
                     ],

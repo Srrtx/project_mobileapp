@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:project_mobileapp/Register.dart';
+import 'package:project_mobileapp/User(student)/home_user.dart';
+import 'Register.dart';
+import 'Approver/Home_approver.dart';
+import 'Staff(admin)/home_staff.dart';
 
 class LoginApp extends StatelessWidget {
   const LoginApp({super.key});
@@ -12,8 +15,53 @@ class LoginApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void _login() {
+    String username = _usernameController.text;
+    String password = _passwordController.text;
+
+    if (username == 'student' && password == '1111') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeUser()),
+      );
+    } else if (username == 'approver' && password == '2222') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeApprover()),
+      );
+    } else if (username == 'admin' && password == '3333') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeStaff()),
+      );
+    } else {
+      // Show an error message
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Invalid'),
+          content: Text('Please check your username and password.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +95,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   TextField(
+                    controller: _usernameController,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -64,6 +113,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   TextField(
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       filled: true,
@@ -82,9 +132,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {
-                      // Add your login logic here
-                    },
+                    onPressed: _login,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
@@ -110,7 +158,7 @@ class LoginPage extends StatelessWidget {
                         );
                       },
                       child: Text(
-                        "Don't have an account create an Account",
+                        "Don't have an account? Create an account",
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 10,

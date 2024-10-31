@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'edit_room.dart';
+import '../Staff(admin)/edit_room.dart';
 import 'package:flutter/material.dart';
-import 'add_room.dart';
+import '../Staff(admin)/add_room.dart';
 
 class HomepageStaff extends StatefulWidget {
   const HomepageStaff({super.key});
@@ -82,7 +82,6 @@ class _HomepageStaffState extends State<HomepageStaff> {
             ],
           ),
         ),
-        // backgroundColor: Color(0xFFF3F3E0),
         body: TabBarView(
           children: [
             SafeArea(

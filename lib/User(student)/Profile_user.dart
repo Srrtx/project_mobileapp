@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Login.dart';
 import 'package:project_mobileapp/User(student)/Check_status.dart';
 import 'package:project_mobileapp/User(student)/History_user.dart';
-
-import 'package:project_mobileapp/User(student)/home.dart';
 import 'package:project_mobileapp/User(student)/home_user.dart';
 
 class ProfileUser extends StatelessWidget {
