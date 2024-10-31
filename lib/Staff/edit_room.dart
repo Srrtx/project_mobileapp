@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_mobileapp/Staff/home_staff.dart';
 import 'Homepage_staff.dart';
 import 'Dashboard_staff.dart';
 import 'history_staff.dart';
@@ -70,7 +71,7 @@ class _EditRoomState extends State<EditRoom> {
         case 0:
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const HomepageStaff()),
+            MaterialPageRoute(builder: (context) => const HomeStaff()),
           );
           break;
         case 1:

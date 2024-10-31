@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_mobileapp/Staff/home_staff.dart';
 import 'Homepage_staff.dart';
 import 'history_staff.dart';
 import 'profile_staff.dart';
@@ -26,7 +27,7 @@ class DashboardStaff extends StatelessWidget {
         case 0:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomepageStaff()),
+            MaterialPageRoute(builder: (context) => const HomeStaff()),
           );
           break;
         case 1:

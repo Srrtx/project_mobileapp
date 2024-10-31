@@ -8,7 +8,7 @@ import 'Approver/Home_approver.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: HomeStaff(),
+    home: HomeApprover(),
     // theme: ThemeData(),
     debugShowCheckedModeBanner: true,
   ));

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Login.dart';
+import 'package:project_mobileapp/Staff/home_staff.dart';
+import 'Homepage_staff.dart';
+import 'Dashboard_staff.dart';
+import 'history_staff.dart';
 
 class ProfileStaff extends StatelessWidget {
   const ProfileStaff({super.key});
@@ -12,56 +16,64 @@ class ProfileStaff extends StatelessWidget {
   }
 }
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
-  //  //Nav
-  // int _selectedIndex = 1;
-  // void _onDestinationSelected(int index) {
-  //   switch (index) {
-  //     case 0:
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(builder: (context) => const HomeStaff()),
-  //       );
-  //       break;
-  //     case 1:
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(builder: (context) => const DashboardStaff()),
-  //       );
-  //       break;
-  //     case 2:
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(builder: (context) => const HistoryStaff()),
-  //       );
-  //       break;
-  //     case 3:
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(builder: (context) => const ProfileStaff()),
-  //       );
-  //       break;
-  //   }
-  // }
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  int _selectedIndex = 3;
+
+  void _onDestinationSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeStaff()),
+        );
+        break;
+      case 1:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardStaff()),
+        );
+        break;
+      case 2:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HistoryStaff()),
+        );
+        break;
+      case 3:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfileStaff()),
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.white, // Set the background color to full screen
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start, // Align children to the start
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title aligned to the top left and outside the white box
               Text(
                 'Your Profile',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 20), // Space between title and the box
+              SizedBox(height: 20),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -80,8 +92,7 @@ class ProfilePage extends StatelessWidget {
                         backgroundImage:
                             AssetImage('assets/images/Profile.png'),
                       ),
-                      SizedBox(height: 10), // Space between avatar and name
-                      // Name centered below the profile picture
+                      SizedBox(height: 10),
                       Text(
                         'J',
                         style: TextStyle(
@@ -98,7 +109,6 @@ class ProfilePage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 10),
-                      // Full Name and Email
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(16.0),
@@ -156,21 +166,20 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
       ),
-      //  //Nav bar (bottom)
-      // bottomNavigationBar: NavigationBar(
-      //   height: 60,
-      //   elevation: 0,
-      //   selectedIndex: _selectedIndex,
-      //   onDestinationSelected: _onDestinationSelected,
-      //   destinations: const [
-      //     NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-      //     NavigationDestination(
-      //         icon: Icon(Icons.pie_chart), label: 'Dashboard'),
-      //     NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
-      //     NavigationDestination(
-      //         icon: Icon(Icons.account_circle), label: 'Profile'),
-      //   ],
-      // ),
+      bottomNavigationBar: NavigationBar(
+        height: 60,
+        elevation: 0,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onDestinationSelected,
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(
+              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
+          NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
+          NavigationDestination(
+              icon: Icon(Icons.account_circle), label: 'Profile'),
+        ],
+      ),
     );
   }
 }
