@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Login.dart';
 
-class RegisterApp extends StatelessWidget {
-  const RegisterApp({super.key});
+class Register extends StatelessWidget {
+  const Register({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +164,7 @@ class RegisterPage extends StatelessWidget {
                         'Already have an account',
                         style: TextStyle(
                           color: Colors.grey,
+                          fontSize: 10,
                         ),
                       ),
                     ),
@@ -179,5 +180,5 @@ class RegisterPage extends StatelessWidget {
 }
 
 void main() {
-  runApp(const RegisterApp());
+  runApp(const Register());
 }

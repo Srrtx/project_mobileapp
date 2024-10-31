@@ -1,59 +1,16 @@
-#For Navbar Link
+# project_mobileapp
 
-    //Nav
-    int _selectedIndex = 1;
-    void _onDestinationSelected(int index) {
-      switch (index) {
-        case 0:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeApprover()),
-          );
-          break;
-        case 1:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const BookingReq()),
-          );
-          break;
-        case 2:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const DashboardApprover()),
-          );
-          break;
-        case 3:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HistoryApprover()),
-          );
-          break;
-        case 4:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const Profileapprover()),
-          );
-          break;
-      }
-    }
+A new Flutter project.
 
+## Getting Started
 
-      //Nav bar (bottom)
-      bottomNavigationBar: NavigationBar(
-        height: 60,
-        elevation: 0,
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: _onDestinationSelected,
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(
-              icon: Icon(Icons.notifications), label: 'Request'),
-          NavigationDestination(
-              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
-          NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
-          NavigationDestination(
-              icon: Icon(Icons.account_circle), label: 'Profile'),
-        ],
-      ),
-    );
-  
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

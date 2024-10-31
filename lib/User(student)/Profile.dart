@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Login.dart';
-import 'package:project_mobileapp/Staff/home_staff.dart';
-import 'Homepage_staff.dart';
-import 'Dashboard_staff.dart';
-import 'history_staff.dart';
+import 'package:project_mobileapp/User(student)/Check_status.dart';
+import 'package:project_mobileapp/User(student)/History.dart';
+import 'package:project_mobileapp/User(student)/home.dart';
 
-class ProfileStaff extends StatelessWidget {
-  const ProfileStaff({super.key});
+class ProfileUser extends StatelessWidget {
+  const ProfileUser({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,41 +19,33 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   int _selectedIndex = 3;
 
   void _onDestinationSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
     switch (index) {
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeStaff()),
+          MaterialPageRoute(builder: (context) => const Home()),
         );
         break;
       case 1:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const DashboardStaff()),
+          MaterialPageRoute(builder: (context) => const Status_check()),
         );
         break;
       case 2:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HistoryStaff()),
+          MaterialPageRoute(builder: (context) => const history()),
         );
         break;
       case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfileStaff()),
-        );
         break;
     }
   }
@@ -62,22 +53,19 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Your Profile'), // เพิ่มหัวข้อที่นี่
+      ),
       body: Container(
-        color: Colors.white,
+        color: Colors.white, // ตั้งค่าสีพื้นหลังให้เต็มหน้าจอ
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Your Profile',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Color(0xFFF0EBE3),
+                  color: Color(0xFFF0EBE3), // สีพื้นหลังของกล่องโปรไฟล์
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -92,12 +80,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         backgroundImage:
                             AssetImage('assets/images/Profile.png'),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 20),
                       Text(
                         'J',
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 20),
                       Align(
@@ -162,6 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
+              Expanded(child: Container()), // ส่วนที่เหลือของหน้าจอ
             ],
           ),
         ),
@@ -174,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
+              icon: Icon(Icons.notifications), label: 'Status'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
@@ -185,5 +173,5 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 void main() {
-  runApp(const ProfileStaff());
+  runApp(const ProfileUser());
 }
