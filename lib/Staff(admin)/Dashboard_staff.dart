@@ -1,10 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:project_mobileapp/Staff(admin)/history_staff.dart';
 import 'package:project_mobileapp/Staff(admin)/home_staff.dart';
-import 'history_staff.dart';
 import 'profile_staff.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class DashboardStaff extends StatelessWidget {
-  const DashboardStaff({super.key});
+class DashboardStaff extends StatefulWidget {
+  const DashboardStaff({Key? key}) : super(key: key);
+
+  @override
+  State<DashboardStaff> createState() => _DashboardStaffState();
+}
+
+class _DashboardStaffState extends State<DashboardStaff> {
+  int allroom = 0;
+  int free = 0;
+  int pending = 0;
+  int disabled = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response =
+          await http.get(Uri.parse('http://172.25.201.47:3000/room-stats'));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          allroom = data['allroom'];
+          free = data['free'];
+          pending = data['pending'];
+          disabled = data['disabled'];
+        });
+      } else {
+        print('Failed to load data');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,12 +51,6 @@ class DashboardStaff extends StatelessWidget {
     DateTime now = DateTime.now();
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
-
-    // Sample data for the dashboard
-    final int allroom = 3; // Replace with actual data
-    final int disabled = 0; // Replace with actual data
-    final int pending = 1; // Replace with actual data
-    final int free = 9; // Replace with actual data
 
     //Nav
     int _selectedIndex = 1;
@@ -194,12 +227,12 @@ class DashboardCard extends StatelessWidget {
   final IconData icon; // Added icon parameter
 
   const DashboardCard({
-    super.key,
+    Key? key,
     required this.title,
     required this.count,
     required this.color,
     required this.icon,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

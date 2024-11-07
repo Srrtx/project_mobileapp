@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:project_mobileapp/User(student)/History_user.dart';
+import 'package:project_mobileapp/User(student)/Profile_user.dart';
 import 'home_user.dart';
-import 'History_user.dart';
-import 'Profile_user.dart';
 
 class CheckstatusUser extends StatefulWidget {
   const CheckstatusUser({super.key});

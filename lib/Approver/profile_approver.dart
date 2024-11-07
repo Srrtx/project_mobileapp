@@ -1,81 +1,79 @@
 import 'package:flutter/material.dart';
-import 'package:project_mobileapp/Login.dart';
+import 'package:project_mobileapp/Approver/Dashboard_approver.dart';
+import 'package:project_mobileapp/Approver/Home_approver.dart';
 import 'package:project_mobileapp/Approver/history_approver.dart';
-import 'Dashboard_approver.dart';
-import 'booking_req.dart';
-import 'Home_approver.dart';
+import 'package:project_mobileapp/Login.dart';
+import 'package:project_mobileapp/Approver/Home_approver.dart';
 
-class Profileapprover extends StatelessWidget {
-  const Profileapprover({super.key});
+class ProfileApprover extends StatefulWidget {
+  final int userId;
+  final String userName;
+  final String userEmail;
+
+  const ProfileApprover({
+    Key? key,
+    required this.userId,
+    required this.userName,
+    required this.userEmail,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ProfilePage(),
-    );
-  }
+  State<ProfileApprover> createState() => _ProfileApproverState();
 }
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class _ProfileApproverState extends State<ProfileApprover> {
+  int _selectedIndex = 3;
+
+  void _onDestinationSelected(int index) {
+    if (index == _selectedIndex) return;
+
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeApprover()),
+        );
+        break;
+      case 1:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardApproved()),
+        );
+        break;
+      case 2:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HistoryApprover()),
+        );
+        break;
+      case 3:
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    //Nav
-    int _selectedIndex = 4;
-    void _onDestinationSelected(int index) {
-      switch (index) {
-        case 0:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeApprover()),
-          );
-          break;
-        case 1:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const BookingReq()),
-          );
-          break;
-        case 2:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const DashboardApproved()),
-          );
-          break;
-        case 3:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HistoryApprover()),
-          );
-          break;
-        case 4:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const Profileapprover()),
-          );
-          break;
-      }
-    }
-
     return Scaffold(
+      appBar: AppBar(title: const Text('Profile')),
       body: Container(
-        color: Colors.white, // Set the background color to full screen
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start, // Align children to the start
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title aligned to the top left and outside the white box
               Text(
                 'Your Profile',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 20), // Space between title and the box
+              const SizedBox(height: 20),
               Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xFFF0EBE3),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
@@ -86,53 +84,51 @@ class ProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 50,
                         backgroundImage:
                             AssetImage('assets/images/Profile.png'),
                       ),
-                      SizedBox(height: 10), // Space between avatar and name
-                      // Name centered below the profile picture
+                      const SizedBox(height: 10),
                       Text(
-                        'J',
-                        style: TextStyle(
+                        widget.userName,
+                        style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'About',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      // Full Name and Email
+                      const SizedBox(height: 10),
                       Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(16.0),
-                        margin: EdgeInsets.only(bottom: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Full Name: jj',
-                                style: TextStyle(fontSize: 14)),
-                            SizedBox(height: 8),
-                            Text('Email: abc@example.com',
-                                style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
-                      ),
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16.0),
+                          margin: const EdgeInsets.only(bottom: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Username: ${widget.userName}',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              Text('Email: ${widget.userEmail}',
+                                  style: const TextStyle(fontSize: 14)),
+                            ],
+                          )),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => LoginPage()),
@@ -140,7 +136,7 @@ class ProfilePage extends StatelessWidget {
                         },
                         child: Container(
                           width: double.infinity,
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
                           decoration: BoxDecoration(
                             color: Colors.transparent,
                             border: Border.all(color: Colors.red),
@@ -148,7 +144,7 @@ class ProfilePage extends StatelessWidget {
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Icon(Icons.exit_to_app, color: Colors.red),
                               SizedBox(width: 8),
                               Text(
@@ -163,14 +159,10 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
               ),
-              Expanded(
-                child: Container(),
-              ),
             ],
           ),
         ),
       ),
-      //Nav bar (bottom)
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
@@ -179,9 +171,7 @@ class ProfilePage extends StatelessWidget {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.notifications), label: 'Request'),
-          NavigationDestination(
-              icon: Icon(Icons.space_dashboard_rounded), label: 'Dashboard'),
+              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
@@ -190,7 +180,3 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
-
-// void main() {
-//   runApp(const Profileapprover());
-// }

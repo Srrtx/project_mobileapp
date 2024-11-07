@@ -1,31 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:project_mobileapp/Approver/Home_approver.dart';
 import 'package:project_mobileapp/Login.dart';
-import 'package:project_mobileapp/User(student)/Check_status.dart';
+import 'package:project_mobileapp/Approver/Home_approver.dart';
 import 'package:project_mobileapp/User(student)/History_user.dart';
 import 'package:project_mobileapp/User(student)/home_user.dart';
 
-class ProfileUser extends StatelessWidget {
-  const ProfileUser({super.key});
+class ProfileUser extends StatefulWidget {
+  final int userId;
+  final String userName;
+  final String userEmail;
+
+  const ProfileUser({
+    Key? key,
+    required this.userId,
+    required this.userName,
+    required this.userEmail,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ProfilePage(),
-    );
-  }
+  State<ProfileUser> createState() => _ProfileUserState();
 }
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
-
-  @override
-  _ProfilePageState createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfileUserState extends State<ProfileUser> {
   int _selectedIndex = 3;
 
   void _onDestinationSelected(int index) {
+    if (index == _selectedIndex) return;
+
+    setState(() {
+      _selectedIndex = index;
+    });
+
     switch (index) {
       case 0:
         Navigator.pushReplacement(
@@ -34,10 +39,10 @@ class _ProfilePageState extends State<ProfilePage> {
         );
         break;
       case 1:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const CheckstatusUser()),
-        );
+        // Navigator.pushReplacement(
+        // context,
+        //  MaterialPageRoute(builder: (context) => const Dashboard()),
+        // );
         break;
       case 2:
         Navigator.pushReplacement(
@@ -53,19 +58,23 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Profile'), // เพิ่มหัวข้อที่นี่
-      ),
+      appBar: AppBar(title: const Text('Profile')),
       body: Container(
-        color: Colors.white, // ตั้งค่าสีพื้นหลังให้เต็มหน้าจอ
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                'Your Profile',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
               Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color(0xFFF0EBE3), // สีพื้นหลังของกล่องโปรไฟล์
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF0EBE3),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -75,50 +84,51 @@ class _ProfilePageState extends State<ProfilePage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 50,
                         backgroundImage:
                             AssetImage('assets/images/Profile.png'),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       Text(
-                        'J',
-                        style: TextStyle(
+                        widget.userName,
+                        style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'About',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(16.0),
-                        margin: EdgeInsets.only(bottom: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Full Name: jj',
-                                style: TextStyle(fontSize: 14)),
-                            SizedBox(height: 8),
-                            Text('Email: abc@example.com',
-                                style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
-                      ),
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16.0),
+                          margin: const EdgeInsets.only(bottom: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Username: ${widget.userName}',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              Text('Email: ${widget.userEmail}',
+                                  style: const TextStyle(fontSize: 14)),
+                            ],
+                          )),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => LoginPage()),
@@ -126,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                         child: Container(
                           width: double.infinity,
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
                           decoration: BoxDecoration(
                             color: Colors.transparent,
                             border: Border.all(color: Colors.red),
@@ -134,7 +144,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Icon(Icons.exit_to_app, color: Colors.red),
                               SizedBox(width: 8),
                               Text(
@@ -149,7 +159,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              Expanded(child: Container()), // ส่วนที่เหลือของหน้าจอ
             ],
           ),
         ),
@@ -162,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.notifications), label: 'Status'),
+              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
@@ -170,8 +179,4 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const ProfileUser());
 }

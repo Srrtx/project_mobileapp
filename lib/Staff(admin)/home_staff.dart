@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'Dashboard_staff.dart';
-import 'history_staff.dart';
-import 'profile_staff.dart';
-import 'add_room.dart';
-import 'edit_room.dart';
+import 'package:project_mobileapp/Staff(admin)/Dashboard_staff.dart';
+import 'package:project_mobileapp/Staff(admin)/add_room.dart';
+import 'package:project_mobileapp/Staff(admin)/edit_room.dart';
+import 'package:project_mobileapp/Staff(admin)/history_staff.dart';
+import 'package:project_mobileapp/Staff(admin)/profile_staff.dart';
 
 class HomeStaff extends StatefulWidget {
   const HomeStaff({super.key});

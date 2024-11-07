@@ -1,41 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/Login.dart';
-import 'package:project_mobileapp/Staff(admin)/home_staff.dart';
-import 'Dashboard_staff.dart';
-import 'history_staff.dart';
+import 'package:project_mobileapp/Staff(admin)/Dashboard_staff.dart';
+import 'package:project_mobileapp/Staff(admin)/history_staff.dart';
 
-class ProfileStaff extends StatelessWidget {
-  const ProfileStaff({super.key});
+class ProfileStaff extends StatefulWidget {
+  final int userId;
+  final String userName;
+  final String userEmail;
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ProfilePage(),
-    );
-  }
-}
-
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfileStaff({
+    Key? key,
+    required this.userId,
+    required this.userName,
+    required this.userEmail,
+  }) : super(key: key);
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfileStaff> createState() => _ProfileStaffState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfileStaffState extends State<ProfileStaff> {
   int _selectedIndex = 3;
 
   void _onDestinationSelected(int index) {
+    if (index == _selectedIndex) return;
+
     setState(() {
       _selectedIndex = index;
     });
 
     switch (index) {
       case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeStaff()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const HomeStaff()),
+        // );
         break;
       case 1:
         Navigator.pushReplacement(
@@ -50,10 +49,6 @@ class _ProfilePageState extends State<ProfilePage> {
         );
         break;
       case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfileStaff()),
-        );
         break;
     }
   }
@@ -61,6 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Profile')),
       body: Container(
         color: Colors.white,
         child: Padding(
@@ -72,10 +68,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 'Your Profile',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xFFF0EBE3),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
@@ -86,51 +82,51 @@ class _ProfilePageState extends State<ProfilePage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 50,
                         backgroundImage:
                             AssetImage('assets/images/Profile.png'),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
-                        'J',
-                        style: TextStyle(
+                        widget.userName,
+                        style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'About',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(16.0),
-                        margin: EdgeInsets.only(bottom: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Full Name: jj',
-                                style: TextStyle(fontSize: 14)),
-                            SizedBox(height: 8),
-                            Text('Email: abc@example.com',
-                                style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
-                      ),
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16.0),
+                          margin: const EdgeInsets.only(bottom: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Username: ${widget.userName}',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              Text('Email: ${widget.userEmail}',
+                                  style: const TextStyle(fontSize: 14)),
+                            ],
+                          )),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => LoginPage()),
@@ -138,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                         child: Container(
                           width: double.infinity,
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
                           decoration: BoxDecoration(
                             color: Colors.transparent,
                             border: Border.all(color: Colors.red),
@@ -146,7 +142,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Icon(Icons.exit_to_app, color: Colors.red),
                               SizedBox(width: 8),
                               Text(
@@ -181,8 +177,4 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const ProfileStaff());
 }

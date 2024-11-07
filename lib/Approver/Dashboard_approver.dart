@@ -1,11 +1,51 @@
 import 'package:flutter/material.dart';
-import 'Home_approver.dart';
-import 'booking_req.dart';
-import 'history_approver.dart';
-import 'profile_approver.dart';
 
-class DashboardApproved extends StatelessWidget {
-  const DashboardApproved({super.key});
+import 'package:http/http.dart' as http;
+import 'package:project_mobileapp/Approver/Home_approver.dart';
+import 'package:project_mobileapp/Approver/history_approver.dart';
+import 'dart:convert';
+
+import 'package:project_mobileapp/Staff(admin)/home_staff.dart';
+
+class DashboardApproved extends StatefulWidget {
+  const DashboardApproved({Key? key}) : super(key: key);
+
+  @override
+  State<DashboardApproved> createState() => _DashboardApprovedState();
+}
+
+class _DashboardApprovedState extends State<DashboardApproved> {
+  int allroom = 0;
+  int free = 0;
+  int pending = 0;
+  int disabled = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response =
+          await http.get(Uri.parse('http://172.25.201.47:3000/room-stats'));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          allroom = data['allroom'];
+          free = data['free'];
+          pending = data['pending'];
+          disabled = data['disabled'];
+        });
+      } else {
+        print('Failed to load data');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,41 +54,29 @@ class DashboardApproved extends StatelessWidget {
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
-    //Display Number
-    final int allroom = 3; // Replace with actual data
-    final int disabled = 0; // Replace with actual data
-    final int pending = 1; // Replace with actual data
-    final int free = 9; // Replace with actual data
-
-//Nav
-    int _selectedIndex = 2;
+    //Nav
+    int _selectedIndex = 1;
     void _onDestinationSelected(int index) {
       switch (index) {
         case 0:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomeApprover()),
+            MaterialPageRoute(builder: (context) => const HomeStaff()),
           );
           break;
         case 1:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const BookingReq()),
+            MaterialPageRoute(builder: (context) => const DashboardApproved()),
           );
           break;
         case 2:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const DashboardApproved()),
-          );
-          break;
-        case 3:
-          Navigator.pushReplacement(
-            context,
             MaterialPageRoute(builder: (context) => const HistoryApprover()),
           );
           break;
-        case 4:
+        case 3:
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const Profileapprover()),
@@ -116,6 +144,7 @@ class DashboardApproved extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16), // Space between time and dashboard
+
               // Dashboard Section
               Expanded(
                 child: SingleChildScrollView(
@@ -174,7 +203,7 @@ class DashboardApproved extends StatelessWidget {
           ),
         ),
       ),
-      // Nav bar (bottom)
+      //Nav bar (bottom)
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
@@ -183,9 +212,7 @@ class DashboardApproved extends StatelessWidget {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.notifications), label: 'Request'),
-          NavigationDestination(
-              icon: Icon(Icons.space_dashboard_rounded), label: 'Dashboard'),
+              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
           NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
           NavigationDestination(
               icon: Icon(Icons.account_circle), label: 'Profile'),
@@ -202,12 +229,12 @@ class DashboardCard extends StatelessWidget {
   final IconData icon; // Added icon parameter
 
   const DashboardCard({
-    super.key,
+    Key? key,
     required this.title,
     required this.count,
     required this.color,
     required this.icon,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,52 +1,93 @@
 import 'package:flutter/material.dart';
-import 'home_user.dart';
-import 'Check_status.dart';
-import 'Profile_user.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:project_mobileapp/User(student)/Check_status.dart';
+import 'package:project_mobileapp/User(student)/home_user.dart';
 
-class HistoryUser extends StatelessWidget {
-  const HistoryUser({super.key});
+class HistoryUser extends StatefulWidget {
+  final int userId;
+
+  const HistoryUser({super.key, required this.userId});
+
+  @override
+  _HistoryUserState createState() => _HistoryUserState();
+}
+
+class _HistoryUserState extends State<HistoryUser> {
+  late Future<List<HistoryRecord>> _historyRecords;
+
+  @override
+  void initState() {
+    super.initState();
+    _historyRecords = fetchHistory(widget.userId); // Fetch history on init
+  }
+
+  Future<List<HistoryRecord>> fetchHistory(int userId) async {
+    final response =
+        await http.get(Uri.parse('http://172.25.201.47:3000/history/$userId'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((record) => HistoryRecord.fromJson(record)).toList();
+    } else {
+      throw Exception('Failed to load history');
+    }
+  }
+
+  String formatDate(String logDate) {
+    final DateTime date = DateTime.parse(logDate);
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
+  }
+
+  int _selectedIndex = 2;
+
+  void _onDestinationSelected(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeUser()),
+        );
+        break;
+      case 1:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const CheckstatusUser()),
+        );
+        break;
+      case 2:
+        //  Navigator.pushReplacement(
+        //context,
+        //  MaterialPageRoute(builder: (context) => const HistoryUser(userId: widget.userId)),
+        //  );
+        break;
+      case 3:
+        // Navigator.pushReplacement(
+        //  context,
+        //  MaterialPageRoute(builder: (context) => const ProfilePage()),
+        // );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Get the current date and time
+    // Get current date and time
     DateTime now = DateTime.now();
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
-    //Nav
-    int _selectedIndex = 2;
-    void _onDestinationSelected(int index) {
-      switch (index) {
-        case 0:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeUser()),
-          );
-          break;
-        case 1:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const CheckstatusUser()),
-          );
-          break;
-        case 2:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HistoryUser()),
-          );
-          break;
-        case 3:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const ProfileUser()),
-          );
-          break;
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('History'),
+        title: const Text(
+          'History',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         titleTextStyle: const TextStyle(
           color: Colors.black,
           fontSize: 28,
@@ -58,7 +99,7 @@ class HistoryUser extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Date and Time Row
+              // Move the date and time below the AppBar
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -81,6 +122,7 @@ class HistoryUser extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(width: 16),
                   // Time container
                   Container(
                     padding:
@@ -102,47 +144,46 @@ class HistoryUser extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16), // Space between time and room slots
+              const SizedBox(
+                  height: 16), // Add space between date/time and history list
 
-              // Room Slots Section
-              Expanded(
-                child: ListView(
-                  children: const [
-                    RoomSlot(
-                      roomName: 'Meeting Room 1',
-                      date: '20/10/2024',
-                      time: '13:00-15:00',
-                      user: 'User1',
-                      approver: 'John',
-                      imagePath: 'assets/images/meeting.png',
-                      isApproved: true,
-                    ),
-                    RoomSlot(
-                      roomName: 'Meeting Room 2',
-                      date: '18/10/2024',
-                      time: '10:00-12:00',
-                      user: 'User1',
-                      approver: 'S',
-                      imagePath: 'assets/images/meeting.png',
-                      isApproved: false,
-                    ),
-                    RoomSlot(
-                      roomName: 'Meeting Room 3',
-                      date: '17/10/2024',
-                      time: '15:00-17:00',
-                      user: 'User1',
-                      approver: 'S',
-                      imagePath: 'assets/images/meeting.png',
-                      isApproved: true,
-                    ),
-                  ],
-                ),
+              // History List
+              FutureBuilder<List<HistoryRecord>>(
+                future: _historyRecords,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No history available.'));
+                  } else {
+                    final historyRecords = snapshot.data!;
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: historyRecords.length,
+                        itemBuilder: (context, index) {
+                          final record = historyRecords[index];
+                          return RoomSlot(
+                            roomName: record.roomName,
+                            date: formatDate(record.logDate),
+                            time: record.timeSlot,
+                            user: record.studentName,
+                            approver: record.approverName,
+                            imagePath:
+                                'assets/images/meeting.png', // Use appropriate image path
+                            isApproved: record.status == 'Approved',
+                          );
+                        },
+                      ),
+                    );
+                  }
+                },
               ),
             ],
           ),
         ),
       ),
-      //Nav bar (bottom)
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
@@ -168,7 +209,7 @@ class RoomSlot extends StatelessWidget {
   final String user;
   final String approver;
   final String imagePath;
-  final bool isApproved; // Add this property to define the approval status
+  final bool isApproved;
 
   const RoomSlot({
     super.key,
@@ -186,9 +227,8 @@ class RoomSlot extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        splashColor: Colors.grey.withOpacity(0.3), // Add splash effect
-        borderRadius:
-            BorderRadius.circular(12), // Match with card's border radius
+        splashColor: Colors.grey.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12),
         child: Card(
           color: const Color.fromRGBO(240, 235, 227, 1),
           margin: const EdgeInsets.symmetric(vertical: 4),
@@ -203,7 +243,6 @@ class RoomSlot extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    // Image section
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.asset(
@@ -214,7 +253,6 @@ class RoomSlot extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 14),
-                    // Room info section
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +276,7 @@ class RoomSlot extends StatelessWidget {
                                 fontSize: 14, color: Colors.black),
                           ),
                           Text(
-                            'Booked: $user',
+                            'Booked by: $user',
                             style: const TextStyle(
                                 fontSize: 14, color: Colors.black),
                           ),
@@ -253,24 +291,17 @@ class RoomSlot extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 3),
-                // Approve/Disapprove display
                 Align(
-                  alignment:
-                      Alignment.centerRight, // Move container to the right
+                  alignment: Alignment.centerRight,
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                        right: 10.0), // Adjust padding to fine-tune position
+                    padding: const EdgeInsets.only(right: 10.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isApproved
-                            ? Colors.green
-                            : Colors.red, // Fixed color based on approval
-                        borderRadius:
-                            BorderRadius.circular(10), // Rounded container
+                        color: isApproved ? Colors.green : Colors.red,
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       padding: const EdgeInsets.symmetric(
-                          vertical: 2,
-                          horizontal: 8), // Adjust padding to match button size
+                          vertical: 2, horizontal: 8),
                       child: Text(
                         isApproved ? 'Approved' : 'Disapproved',
                         style: const TextStyle(color: Colors.white),
@@ -283,6 +314,38 @@ class RoomSlot extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class HistoryRecord {
+  final int historyId;
+  final String roomName;
+  final String timeSlot;
+  final String approverName;
+  final String studentName;
+  final String status;
+  final String logDate;
+
+  HistoryRecord({
+    required this.historyId,
+    required this.roomName,
+    required this.timeSlot,
+    required this.approverName,
+    required this.studentName,
+    required this.status,
+    required this.logDate,
+  });
+
+  factory HistoryRecord.fromJson(Map<String, dynamic> json) {
+    return HistoryRecord(
+      historyId: json['history_id'],
+      roomName: json['room_name'],
+      timeSlot: json['time_slot'],
+      approverName: json['approver_name'],
+      studentName: json['student_name'],
+      status: json['status'],
+      logDate: json['log_date'],
     );
   }
 }

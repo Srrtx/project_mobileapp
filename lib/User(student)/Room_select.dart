@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:project_mobileapp/User(student)/Check_status.dart';
+import 'package:project_mobileapp/User(student)/History_user.dart';
+import 'package:project_mobileapp/User(student)/Profile_user.dart';
 import 'home_user.dart';
-import 'Check_status.dart';
-import 'History_user.dart';
-import 'Profile_user.dart';
+
 
 class RoomSelect extends StatefulWidget {
   const RoomSelect({super.key});
@@ -38,13 +39,13 @@ class _RoomselectState extends State<RoomSelect> {
         case 2:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HistoryUser()),
+            MaterialPageRoute(builder: (context) => const HistoryUser),
           );
           break;
         case 3:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const ProfileUser()),
+            MaterialPageRoute(builder: (context) => const ProfileUser(),
           );
           break;
       }

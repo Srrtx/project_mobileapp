@@ -1,8 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:project_mobileapp/Register.dart';
 import 'package:project_mobileapp/User(student)/home_user.dart';
-import 'Register.dart';
 import 'Approver/Home_approver.dart';
-import 'Staff(admin)/home_staff.dart';
+import 'Staff(admin)/Home_staff.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LoginApp extends StatelessWidget {
   const LoginApp({super.key});
@@ -19,47 +22,94 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final Uri _uri = Uri.parse('http://172.27.1.1:3000/login');
+  String _message = '';
+  bool isWaiting = false;
+  final formKey = GlobalKey<FormState>();
+  final TextEditingController username = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
-  void _login() {
-    String username = _usernameController.text;
-    String password = _passwordController.text;
+  void connect() async {
+    if (isWaiting) return; // ป้องกันการกดปุ่มหลายครั้ง
 
-    if (username == 'student' && password == '1111') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeUser()),
-      );
-    } else if (username == 'approver' && password == '2222') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeApprover()),
-      );
-    } else if (username == 'admin' && password == '3333') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeStaff()),
-      );
-    } else {
-      // Show an error message
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Invalid'),
-          content: Text('Please check your username and password.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
+    setState(() {
+      isWaiting = true;
+      _message = 'Connecting...';
+    });
+
+    try {
+      // ส่ง POST request พร้อมกับข้อมูล username และ password
+      final response = await http
+          .post(
+            _uri,
+            headers: {'Content-Type': 'application/json; charset=UTF-8'},
+            body: jsonEncode({
+              'username': username.text,
+              'password': password.text,
+            }),
+          )
+          .timeout(
+              const Duration(seconds: 10)); // เพิ่มเวลา timeout เป็น 10 วินาที
+
+      if (response.statusCode == 200) {
+        // อ่านข้อความตอบกลับจากเซิร์ฟเวอร์
+        final responseData = jsonDecode(response.body);
+
+        // ตรวจสอบว่า responseData มีค่าที่จำเป็น
+        setState(() {
+          _message = responseData['message'] != null
+              ? responseData['message']
+              : 'Login successful!';
+        });
+
+        // นำทางตามบทบาทผู้ใช้
+        String userRole = responseData['role'] ??
+            ''; // ตรวจสอบให้แน่ใจว่าเซิร์ฟเวอร์ส่งกลับบทบาท
+        if (userRole == 'Student') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeUser()),
+          );
+        } else if (userRole == 'Staff') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeStaff()),
+          );
+        } else if (userRole == 'Approver') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeApprover()),
+          );
+        } else {
+          setState(() {
+            _message = 'Invalid role';
+          });
+        }
+      } else {
+        // อ่านข้อความผิดพลาดจากเซิร์ฟเวอร์
+        final responseData = jsonDecode(response.body);
+        setState(() {
+          _message = responseData['message'] != null
+              ? responseData['message']
+              : 'Login failed';
+        });
+      }
+    } on TimeoutException {
+      setState(() {
+        _message = 'Timeout error!';
+      });
+    } catch (e) {
+      setState(() {
+        _message = 'Unknown error: ${e.toString()}';
+      });
+    } finally {
+      setState(() {
+        isWaiting = false;
+      });
     }
   }
 
@@ -71,102 +121,127 @@ class _LoginPageState extends State<LoginPage> {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Container(
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                color: Color(0xFFF0EBE3),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    spreadRadius: 5,
-                    blurRadius: 10,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Login',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      labelText: 'Username',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade300),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade300),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade500),
-                      ),
+            child: Form(
+              key: formKey,
+              child: Container(
+                padding: const EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: Color(0xFFF0EBE3),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 5,
+                      blurRadius: 10,
+                      offset: Offset(0, 5),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      labelText: 'Password',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade300),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade300),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade500),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                    ),
-                    child: Text(
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
                       'Login',
-                      style: TextStyle(color: Colors.white),
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RegisterPage()),
-                        );
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: username,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelText: 'Username',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your username';
+                        }
+                        return null;
                       },
-                      child: Text(
-                        "Don't have an account? Create an account",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 10,
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: password,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelText: 'Password',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          connect(); // เรียกใช้ฟังก์ชัน connect()
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      ),
+                      child: isWaiting
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                              'Login',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                    ),
+                    SizedBox(height: 20),
+                    Text(_message), // แสดงข้อความตอบกลับ
+                    SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const RegisterPage(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Don't have an account? Create an Account",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 10,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -174,8 +249,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const LoginApp());
 }

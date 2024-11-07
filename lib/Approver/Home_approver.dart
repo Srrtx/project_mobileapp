@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:project_mobileapp/Approver/Dashboard_approver.dart';
+import 'package:project_mobileapp/Approver/booking_req.dart';
 import 'package:project_mobileapp/Approver/history_approver.dart';
-import 'profile_approver.dart';
-import 'Dashboard_approver.dart';
-import 'booking_req.dart';
+
 import 'room_select.dart';
 
 class HomeApprover extends StatefulWidget {
@@ -160,6 +160,10 @@ class _HomeState extends State<HomeApprover> {
       ),
     );
   }
+}
+
+class Profileapprover {
+  const Profileapprover();
 }
 
 class RoomCard extends StatelessWidget {
