@@ -4,7 +4,6 @@ import 'package:project_mobileapp/User(student)/History_user.dart';
 import 'package:project_mobileapp/User(student)/Profile_user.dart';
 import 'home_user.dart';
 
-
 class RoomSelect extends StatefulWidget {
   const RoomSelect({super.key});
 
@@ -37,16 +36,16 @@ class _RoomselectState extends State<RoomSelect> {
           );
           break;
         case 2:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HistoryUser),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const HistoryUser),
+          // );
           break;
         case 3:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const ProfileUser(),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const ProfileUser(),
+          // );
           break;
       }
     }

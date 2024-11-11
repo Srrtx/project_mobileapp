@@ -36,16 +36,16 @@ class _HomeState extends State<HomeUser> {
           );
           break;
         case 2:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HistoryUser()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const HistoryUser()),
+          // );
           break;
         case 3:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const ProfileUser()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const ProfileUser()),
+          // );
           break;
       }
     }

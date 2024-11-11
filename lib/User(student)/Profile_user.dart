@@ -45,10 +45,10 @@ class _ProfileUserState extends State<ProfileUser> {
         // );
         break;
       case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HistoryUser()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const HistoryUser()),
+        // );
         break;
       case 3:
         break;

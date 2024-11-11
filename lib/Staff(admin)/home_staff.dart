@@ -6,6 +6,17 @@ import 'package:project_mobileapp/Staff(admin)/history_staff.dart';
 import 'package:project_mobileapp/Staff(admin)/profile_staff.dart';
 
 class HomeStaff extends StatefulWidget {
+  final String userId;
+  final String userName;
+  final String userEmail;
+
+  const HomeStaff({
+    super.key,
+    required this.userId,
+    required this.userName,
+    required this.userEmail,
+  });
+  @override
   const HomeStaff({super.key});
 
   @override
@@ -25,8 +36,6 @@ class _HomeStaffState extends State<HomeStaff> {
 
   // Variable to keep track of the room number
   int roomNumberCounter = 4;
-
-  @override
   Widget build(BuildContext context) {
     // Get the current date and time
     DateTime now = DateTime.now();
@@ -40,7 +49,12 @@ class _HomeStaffState extends State<HomeStaff> {
         case 0:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomeStaff()),
+            MaterialPageRoute(
+                builder: (context) => const HomeStaff(
+                      userId: widget.userId,
+                      userName: widget.userName,
+                      userEmail: widget.userEmail,
+                    )),
           );
           break;
         case 1:
@@ -52,13 +66,21 @@ class _HomeStaffState extends State<HomeStaff> {
         case 2:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HistoryStaff()),
+            MaterialPageRoute(
+                builder: (context) => const HistoryStaff(
+                      userId: widget.userId,
+                    )),
           );
           break;
         case 3:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const ProfileStaff()),
+            MaterialPageRoute(
+                builder: (context) => const ProfileStaff(
+                      userId: widget.userId,
+                      userName: widget.userName,
+                      userEmail: widget.userEmail,
+                    )),
           );
           break;
       }

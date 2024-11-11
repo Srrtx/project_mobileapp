@@ -41,16 +41,16 @@ class _BookingReqState extends State<BookingReq> {
           );
           break;
         case 3:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HistoryApprover()),
-          );
+          //   Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => const HistoryApprover()),
+          // );
           break;
-        case 4:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const Profileapprover()),
-          );
+          // case 4:
+          //   Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => const Profileapprover()),
+          //   );
           break;
       }
     }

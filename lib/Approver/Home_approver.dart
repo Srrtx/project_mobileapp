@@ -43,16 +43,16 @@ class _HomeState extends State<HomeApprover> {
           );
           break;
         case 3:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HistoryApprover()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const HistoryApprover()),
+          // );
           break;
         case 4:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const Profileapprover()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const Profileapprover()),
+          // );
           break;
       }
     }

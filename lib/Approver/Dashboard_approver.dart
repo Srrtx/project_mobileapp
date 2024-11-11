@@ -59,10 +59,10 @@ class _DashboardApprovedState extends State<DashboardApproved> {
     void _onDestinationSelected(int index) {
       switch (index) {
         case 0:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeStaff()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const HomeStaff()),
+          // );
           break;
         case 1:
           Navigator.pushReplacement(
@@ -71,16 +71,16 @@ class _DashboardApprovedState extends State<DashboardApproved> {
           );
           break;
         case 2:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HistoryApprover()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const HistoryApprover()),
+          // );
           break;
         case 3:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const Profileapprover()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const Profileapprover()),
+          // );
           break;
       }
     }

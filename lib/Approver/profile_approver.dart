@@ -45,10 +45,10 @@ class _ProfileApproverState extends State<ProfileApprover> {
         );
         break;
       case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HistoryApprover()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const HistoryApprover()),
+        // );
         break;
       case 3:
         break;

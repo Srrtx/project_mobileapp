@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:project_mobileapp/Register.dart';
+import 'package:project_mobileapp/Login.dart';
 import 'package:project_mobileapp/User(student)/home_user.dart';
 import 'Approver/Home_approver.dart';
 import 'Staff(admin)/Home_staff.dart';
@@ -75,10 +76,10 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (context) => HomeUser()),
           );
         } else if (userRole == 'Staff') {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HomeStaff()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => HomeStaff()),
+          // );
         } else if (userRole == 'Approver') {
           Navigator.pushReplacement(
             context,

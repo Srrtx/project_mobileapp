@@ -57,10 +57,10 @@ class _DashboardStaffState extends State<DashboardStaff> {
     void _onDestinationSelected(int index) {
       switch (index) {
         case 0:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeStaff()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const HomeStaff()),
+          // );
           break;
         case 1:
           Navigator.pushReplacement(
@@ -69,16 +69,16 @@ class _DashboardStaffState extends State<DashboardStaff> {
           );
           break;
         case 2:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HistoryStaff()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const HistoryStaff()),
+          // );
           break;
         case 3:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const ProfileStaff()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const ProfileStaff()),
+          // );
           break;
       }
     }
