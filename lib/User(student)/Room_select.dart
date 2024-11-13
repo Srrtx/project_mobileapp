@@ -1,17 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:project_mobileapp/User(student)/Check_status.dart';
 import 'package:project_mobileapp/User(student)/History_user.dart';
 import 'package:project_mobileapp/User(student)/Profile_user.dart';
 import 'home_user.dart';
+import 'dart:convert';
 
 class RoomSelect extends StatefulWidget {
-  const RoomSelect({super.key});
+  // RoomSelect({super.key});
+  final int userId;
+  final int roomId;
+  final int timeslotId;
+
+  RoomSelect({
+    Key? key,
+    required this.userId,
+    required this.roomId,
+    required this.timeslotId,
+  }) : super(key: key);
 
   @override
   State<RoomSelect> createState() => _RoomselectState();
 }
 
 class _RoomselectState extends State<RoomSelect> {
+  final String url = 'http://172.25.236.139:3000/booking';
+
+  Future<void> bookSlot(BuildContext context) async {
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          "roomId": widget.roomId,
+          "userId": widget.userId,
+          "timeslotId": widget.timeslotId,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        // Booking successful
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Booking successful")),
+        );
+      } else {
+        // Handle error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Booking failed: ${response.body}")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("An error occurred")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get the current date and time
@@ -165,6 +209,8 @@ class _RoomselectState extends State<RoomSelect> {
                             ElevatedButton(
                               onPressed: () {
                                 // Add booking logic here
+                                bookSlot(context);
+
                                 Navigator.of(context).pop();
                               },
                               style: ElevatedButton.styleFrom(
@@ -209,6 +255,8 @@ class _RoomselectState extends State<RoomSelect> {
                             ElevatedButton(
                               onPressed: () {
                                 // Add booking logic here
+                                bookSlot(context);
+
                                 Navigator.of(context).pop();
                               },
                               style: ElevatedButton.styleFrom(

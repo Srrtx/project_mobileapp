@@ -13,244 +13,220 @@ class CheckstatusUser extends StatefulWidget {
   const CheckstatusUser({super.key});
 
   @override
-  State<CheckstatusUser> createState() => _CheckstatusUserState();
+  State<CheckstatusUser> createState() => Fetch();
 }
 
-class _CheckstatusUserState extends State<CheckstatusUser> {
-  final String _url = 'http://172.25.223.40:3000/:username/status/';
+class Fetch extends State<CheckstatusUser> {
+  final String _url = 'http://172.25.236.139:3000/';
   bool _isloading = false;
   String username = '';
   List? status;
+  @override
+  void initState() {
+    super.initState();
+    getStatus();
+  }
+
+// //Fetch data from server
+  Future<void> saveToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('jwtToken', token); // Save token with key 'jwtToken'
+    print('Saved token: ${prefs.getString('jwtToken')}');
+  }
+
+  Future<void> getStatus() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('jwtToken');
+      final username = prefs.getString('username');
+
+      if (token == null || username == null) {
+        throw Exception('Token or username not found');
+      }
+
+      final response = await http.get(
+        Uri.parse('http://172.25.236.139:3000/$username/status'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print('Request URL: $_url/$username/status');
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        final List<dynamic> data = jsonResponse['data'];
+        setState(() {
+          status = data.map((item) {
+            return {
+              'room_name': item['room_name'],
+              'status': item['status'],
+              'time_slot': item['time_slot'],
+            };
+          }).toList();
+        });
+      } else {
+        throw Exception('Failed to load status');
+      }
+    } catch (e) {
+      print('Error fetching status: $e');
+    }
+  }
+
+  void popDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Navigation
+  int selectedIndex = 1;
+  void onDestinationSelected(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeUser()),
+        );
+        break;
+      case 1:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const CheckstatusUser()),
+        );
+        break;
+      case 2:
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const HistoryUser()),
+        // );
+        break;
+      case 3:
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const ProfileUser()),
+        // );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
-    String currentDate = '${now.day}/${now.month}/${now.year}';
-    String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
-
-//pop up
-    void popDialog(String title, String message) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text(title),
-              content: Text(message),
-            );
-          });
-    }
-
-    void getStatus() async {
-      setState(() {
-        _isloading = true;
-      });
-      try {
-        //get JWT token for local storage
-        final prefs = await SharedPreferences.getInstance();
-        String? token = prefs.getString('token');
-
-        if (token == null) {
-          //no token, redirect to login page
-          //check mounted to use 'context' for nav in 'async' method
-          if (!mounted) return;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginApp()),
-          );
-        }
-        //Token found
-        //decode JWT to get username and role
-        final jwt = JWT.decode(token!);
-        Map playload = jwt.payload;
-
-        //get status
-        Uri uri = Uri.http(_url, '172.25.223.40/:username/status/');
-        http.Response response = await http.get(
-          uri,
-          headers: {'Authorization': 'Bearer $token'},
-        ).timeout(const Duration(days: 1));
-        //check server's response
-        if (response.statusCode == 200) {
-          setState(() {
-            username = playload['username'];
-            status = jsonDecode(response.body);
-          });
-        } else {
-          //wrong password, username
-          popDialog('Error', response.body);
-        }
-      } on TimeoutException catch (e) {
-        debugPrint(e.message);
-        popDialog('Error', 'Timeout error, try again!');
-      } catch (e) {
-        debugPrint(e.toString());
-        popDialog('Error', 'Unknown error, try again!');
-      } finally {
-        setState(() {
-          _isloading = false;
-        });
-      }
-    }
-
-    @override
-    void initState() {
-      super.initState();
-      getStatus();
-    }
-
-    //Nav
-    int _selectedIndex = 1;
-    void _onDestinationSelected(int index) {
-      switch (index) {
-        case 0:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeUser()),
-          );
-          break;
-        case 1:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const CheckstatusUser()),
-          );
-          break;
-        case 2:
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const HistoryUser()),
-          // );
-          break;
-        case 3:
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const ProfileUser()),
-          // );
-          break;
-      }
-    }
-
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
             'Check Status',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 26,
+                color: Colors.black87),
           ),
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
-          elevation: 0,
+          elevation: 0.5,
         ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Card(
-                        color: const Color(0xFFF0EBE3),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.calendar_today),
-                              const SizedBox(width: 8),
-                              Text(
-                                currentDate,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Card(
-                        color: const Color(0xFFF0EBE3),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.access_time),
-                              const SizedBox(width: 8),
-                              Text(
-                                currentTime,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  // Show loading indicator if data is being fetched
-                  if (_isloading)
-                    const CircularProgressIndicator()
-                  else if (status == null || status!.isEmpty)
-                    const Text('No rooms available')
-                  else
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: status!.length,
-                      itemBuilder: (context, index) {
-                        final room = status![index];
-                        return InkWell(
-                          onTap: () {
-                            // Define any on-tap action here
-                          },
-                          child: Card(
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SafeArea(
+            child: _isloading
+                ? const Center(child: CircularProgressIndicator())
+                : status != null && status!.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: status!.length,
+                        itemBuilder: (context, index) {
+                          final booking = status![index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 4.0),
                             color: const Color(0xFFF3F3E0),
                             elevation: 3,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(20.0),
+                              padding: const EdgeInsets.all(16.0),
                               child: Row(
                                 children: [
-                                  Image.asset(
-                                    'assets/images/meeting.png',
-                                    width: 100,
-                                    height: 100,
-                                  ),
-                                  const SizedBox(width: 10),
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.asset(
+                                        'assets/images/meeting.png',
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      )),
+                                  const SizedBox(width: 15),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        room[
-                                            'roomName'], // Dynamically set room name
+                                        booking['room_name'],
                                         style: Theme.of(context)
                                             .textTheme
-                                            .titleMedium!
+                                            .titleLarge!
                                             .copyWith(
                                                 fontWeight: FontWeight.bold),
                                       ),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
                                       Text(
-                                        'Time: ${room['timeSlot']}', // Dynamically set time slot
+                                        'Time: ${booking['time_slot']}',
                                         style: const TextStyle(
-                                            color: Colors.black),
+                                            fontSize: 14, color: Colors.black),
                                       ),
                                       Row(
                                         children: [
                                           const Text(
                                             'Status: ',
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                          ),
-                                          Text(
-                                            room[
-                                                'status'], // Dynamically set status
                                             style: TextStyle(
-                                              color: room['status'] == 'Pending'
-                                                  ? Colors.amber
-                                                  : room['status'] == 'Approved'
-                                                      ? Colors.green
-                                                      : Colors.red,
+                                                fontSize: 14,
+                                                color: Colors.black),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: booking['status'] ==
+                                                      'approved'
+                                                  ? Colors.green[100]
+                                                  : booking['status'] ==
+                                                          'pending'
+                                                      ? Colors.amber[100]
+                                                      : Colors.red[100],
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              booking['status'].toUpperCase(),
+                                              style: TextStyle(
+                                                color: booking['status'] ==
+                                                        'approved'
+                                                    ? Colors.green[700]
+                                                    : booking['status'] ==
+                                                            'pending'
+                                                        ? Colors.amber[700]
+                                                        : Colors.red[700],
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -260,20 +236,17 @@ class _CheckstatusUserState extends State<CheckstatusUser> {
                                 ],
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                ],
-              ),
-            ),
+                          );
+                        },
+                      )
+                    : Center(child: Text("No booking status found")),
           ),
         ),
         bottomNavigationBar: NavigationBar(
           height: 60,
           elevation: 0,
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: _onDestinationSelected,
+          selectedIndex: selectedIndex,
+          onDestinationSelected: onDestinationSelected,
           destinations: const [
             NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
             NavigationDestination(

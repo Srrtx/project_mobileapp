@@ -1,3 +1,4 @@
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
 import 'package:project_mobileapp/User(student)/History_user.dart';
 import 'Room_select.dart';
@@ -36,16 +37,16 @@ class _HomeState extends State<HomeUser> {
           );
           break;
         case 2:
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const HistoryUser()),
-          // );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HistoryUser()),
+          );
           break;
         case 3:
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const ProfileUser()),
-          // );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileUser()),
+          );
           break;
       }
     }
@@ -108,12 +109,12 @@ class _HomeState extends State<HomeUser> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const RoomSelect()), // Change this if necessary
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) =>
+                    //           const RoomSelect()), // Change this if necessary
+                    // );
                   },
                   child: const RoomCard(
                       roomName: 'Meeting Room 1', occupancy: '2/4'),

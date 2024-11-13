@@ -43,10 +43,10 @@ class _ProfileStaffState extends State<ProfileStaff> {
         );
         break;
       case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HistoryStaff()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const HistoryStaff()),
+        // );
         break;
       case 3:
         break;

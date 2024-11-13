@@ -6,16 +6,16 @@ import 'package:project_mobileapp/User(student)/History_user.dart';
 import 'package:project_mobileapp/User(student)/home_user.dart';
 
 class ProfileUser extends StatefulWidget {
-  final int userId;
-  final String userName;
-  final String userEmail;
+  // final int userId;
+  // final String userName;
+  // final String userEmail;
 
-  const ProfileUser({
-    Key? key,
-    required this.userId,
-    required this.userName,
-    required this.userEmail,
-  }) : super(key: key);
+  // const ProfileUser({
+  //   // Key? key,
+  //   // required this.userId,
+  //   // required this.userName,
+  //   // required this.userEmail,
+  // }) : super(key: key);
 
   @override
   State<ProfileUser> createState() => _ProfileUserState();
@@ -90,12 +90,12 @@ class _ProfileUserState extends State<ProfileUser> {
                             AssetImage('assets/images/Profile.png'),
                       ),
                       const SizedBox(height: 10),
-                      Text(
-                        widget.userName,
-                        style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
+                      // Text(
+                      //   widget.userName,
+                      //   style: const TextStyle(
+                      //       fontSize: 24, fontWeight: FontWeight.bold),
+                      //   textAlign: TextAlign.center,
+                      // ),
                       const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerLeft,
@@ -116,16 +116,16 @@ class _ProfileUserState extends State<ProfileUser> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Username: ${widget.userName}',
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              Text('Email: ${widget.userEmail}',
-                                  style: const TextStyle(fontSize: 14)),
-                            ],
-                          )),
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              // children: [
+                              //   Text(
+                              //     'Username: ${widget.userName}',
+                              //     style: TextStyle(fontSize: 14),
+                              //   ),
+                              //   Text('Email: ${widget.userEmail}',
+                              //       style: const TextStyle(fontSize: 14)),
+                              // ],
+                              )),
                       GestureDetector(
                         onTap: () {
                           Navigator.pushReplacement(

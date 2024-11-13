@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:project_mobileapp/Approver/history_approver.dart';
 import 'package:project_mobileapp/User(student)/Check_status.dart';
+import 'package:project_mobileapp/User(student)/Profile_user.dart';
 import 'package:project_mobileapp/User(student)/home_user.dart';
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HistoryUser extends StatefulWidget {
-  final int userId;
-
-  const HistoryUser({super.key, required this.userId});
+  // const HistoryUser({
+  //   super.key,
+  //   required this.username,
+  //   required bookingHistory,
+  // });
 
   @override
   _HistoryUserState createState() => _HistoryUserState();
@@ -20,18 +26,45 @@ class _HistoryUserState extends State<HistoryUser> {
   @override
   void initState() {
     super.initState();
-    _historyRecords = fetchHistory(widget.userId); // Fetch history on init
+    _historyRecords = _fetchHistory();
   }
 
-  Future<List<HistoryRecord>> fetchHistory(int userId) async {
-    final response =
-        await http.get(Uri.parse('http://172.25.201.47:3000/history/$userId'));
+  // Future<Map<String, dynamic>> getDataFromSharedPreferences() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   String? jwtToken = prefs.getString('jwt_token');
+  //   String? username =
+  //       prefs.getString('username'); // Assuming you saved the username
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((record) => HistoryRecord.fromJson(record)).toList();
+  //   return {
+  //     'jwtToken': jwtToken,
+  //     'username': username,
+  //   };
+  // }
+
+  Future<List<HistoryRecord>> _fetchHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token'); // Retrieve JWT token
+    final username = prefs
+        .getString('username'); // Retrieve the username from SharedPreferences
+
+    if (token != null && username != null) {
+      final response = await http.get(
+        Uri.parse('http://172.25.236.139:3000/$username/history'),
+        headers: {
+          'Authorization': 'Bearer $token', // Include the JWT in request header
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((record) => HistoryRecord.fromJson(record)).toList();
+      } else if (response.statusCode == 404) {
+        throw Exception('No history found for user: $username');
+      } else {
+        throw Exception('Failed to load history');
+      }
     } else {
-      throw Exception('Failed to load history');
+      throw Exception('No JWT token or username found');
     }
   }
 
@@ -57,16 +90,16 @@ class _HistoryUserState extends State<HistoryUser> {
         );
         break;
       case 2:
-        //  Navigator.pushReplacement(
-        //context,
-        //  MaterialPageRoute(builder: (context) => const HistoryUser(userId: widget.userId)),
-        //  );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HistoryUser()),
+        );
         break;
       case 3:
-        // Navigator.pushReplacement(
-        //  context,
-        //  MaterialPageRoute(builder: (context) => const ProfilePage()),
-        // );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ProfileUser()),
+        );
         break;
     }
   }
@@ -99,11 +132,10 @@ class _HistoryUserState extends State<HistoryUser> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Move the date and time below the AppBar
+              // Date and time display
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Date container
                   Container(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -123,7 +155,6 @@ class _HistoryUserState extends State<HistoryUser> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  // Time container
                   Container(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -144,17 +175,21 @@ class _HistoryUserState extends State<HistoryUser> {
                   ),
                 ],
               ),
-              const SizedBox(
-                  height: 16), // Add space between date/time and history list
+              const SizedBox(height: 16),
 
-              // History List
+              // History List with FutureBuilder
               FutureBuilder<List<HistoryRecord>>(
                 future: _historyRecords,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                    return Center(
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return Center(child: Text('No history available.'));
                   } else {
@@ -222,6 +257,13 @@ class RoomSlot extends StatelessWidget {
     required this.isApproved,
   });
 
+  Text buildText(String text) {
+    return Text(
+      text,
+      style: const TextStyle(fontSize: 14, color: Colors.black),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -265,26 +307,10 @@ class RoomSlot extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            '$date',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black),
-                          ),
-                          Text(
-                            'Time: $time',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black),
-                          ),
-                          Text(
-                            'Booked by: $user',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black),
-                          ),
-                          Text(
-                            'Approver: $approver',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black),
-                          ),
+                          buildText(date),
+                          buildText('Time: $time'),
+                          buildText('Booked by: $user'),
+                          buildText('Approver: $approver'),
                         ],
                       ),
                     ),
@@ -339,13 +365,13 @@ class HistoryRecord {
 
   factory HistoryRecord.fromJson(Map<String, dynamic> json) {
     return HistoryRecord(
-      historyId: json['history_id'],
-      roomName: json['room_name'],
-      timeSlot: json['time_slot'],
-      approverName: json['approver_name'],
-      studentName: json['student_name'],
-      status: json['status'],
-      logDate: json['log_date'],
+      historyId: json['history_id'] ?? 0, // Handle null with default value
+      roomName: json['room_name'] ?? 'Unknown Room',
+      timeSlot: json['time_slot'] ?? 'N/A',
+      approverName: json['approver_name'] ?? 'Unknown',
+      studentName: json['student_name'] ?? 'Unknown Student',
+      status: json['status'] ?? 'N/A',
+      logDate: json['log_date'] ?? 'N/A',
     );
   }
 }
