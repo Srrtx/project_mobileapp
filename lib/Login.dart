@@ -28,7 +28,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final Uri _uri = Uri.parse('http://172.25.236.139:3000/login');
+  final Uri _uri = Uri.parse('http://192.168.183.1:3000/login');
   String _message = '';
   bool isWaiting = false;
   final formKey = GlobalKey<FormState>();

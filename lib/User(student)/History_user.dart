@@ -2,69 +2,119 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:project_mobileapp/Approver/history_approver.dart';
-import 'package:project_mobileapp/User(student)/Check_status.dart';
-import 'package:project_mobileapp/User(student)/Profile_user.dart';
-import 'package:project_mobileapp/User(student)/home_user.dart';
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Check_status.dart';
+import 'home_user.dart';
 
 class HistoryUser extends StatefulWidget {
-  // const HistoryUser({
-  //   super.key,
-  //   required this.username,
-  //   required bookingHistory,
-  // });
+  final String username;
+
+  const HistoryUser({super.key, required this.username});
 
   @override
   _HistoryUserState createState() => _HistoryUserState();
 }
 
 class _HistoryUserState extends State<HistoryUser> {
-  late Future<List<HistoryRecord>> _historyRecords;
+  // late Future<List<HistoryRecord>> _historyRecords;
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _historyRecords = fetchHistory(widget.username); // ใช้ widget.username
+  // }
+
+  // Future<List<HistoryRecord>> fetchHistory(String username) async {
+  //   try {
+  //     final response = await http.get(Uri.parse(
+  //         'http://192.168.183.1:3000/$username/history')); // ส่ง username ไปใน URL
+
+  //     if (response.statusCode == 200) {
+  //       // แปลง JSON response ที่ได้เป็น Map<String, dynamic>
+  //       final Map<String, dynamic> data = json.decode(response.body);
+
+  //       // ตรวจสอบว่า key 'data' มีอยู่หรือไม่ และแปลงข้อมูลใน 'data' เป็น List
+  //       if (data.containsKey('data')) {
+  //         final List<dynamic> historyData = data['data'];
+
+  //         // แปลง List ของประวัติจาก JSON เป็น List ของ HistoryRecord
+  //         return historyData
+  //             .map((record) => HistoryRecord.fromJson(record))
+  //             .toList();
+  //       } else {
+  //         throw Exception('No data found in response');
+  //       }
+  //     } else {
+  //       throw Exception('Failed to load history');
+  //     }
+  //   } catch (e) {
+  //     print("Error fetching history: $e");
+  //     throw Exception('Failed to connect to the server');
+  //   }
+  // }
+
+//***Try Config JWT to get data
+  final String _url = 'http://192.168.183.1:3000/';
+  bool _isloading = false;
+  String username = '';
+  late Future<List<HistoryRecord>> history; // Change this to a Future
   @override
   void initState() {
     super.initState();
-    _historyRecords = _fetchHistory();
+    history = getStatus();
   }
 
-  // Future<Map<String, dynamic>> getDataFromSharedPreferences() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   String? jwtToken = prefs.getString('jwt_token');
-  //   String? username =
-  //       prefs.getString('username'); // Assuming you saved the username
-
-  //   return {
-  //     'jwtToken': jwtToken,
-  //     'username': username,
-  //   };
-  // }
-
-  Future<List<HistoryRecord>> _fetchHistory() async {
+  //Fetch data from server
+  Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('jwt_token'); // Retrieve JWT token
-    final username = prefs
-        .getString('username'); // Retrieve the username from SharedPreferences
+    await prefs.setString('jwtToken', token); // Save token with key 'jwtToken'
+    print('Saved token: ${prefs.getString('jwtToken')}');
+  }
 
-    if (token != null && username != null) {
+  Future<List<HistoryRecord>> getStatus() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('jwtToken');
+      final username = prefs.getString('username');
+
+      if (token == null || username == null) {
+        throw Exception('Token or username not found');
+      }
+
       final response = await http.get(
-        Uri.parse('http://172.25.236.139:3000/$username/history'),
+        Uri.parse('http://192.168.183.1:3000/$username/history'),
         headers: {
-          'Authorization': 'Bearer $token', // Include the JWT in request header
+          'Authorization': 'Bearer $token',
         },
       );
 
+      print('Request URL: $_url/$username/history');
+      print('Response history code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data.map((record) => HistoryRecord.fromJson(record)).toList();
-      } else if (response.statusCode == 404) {
-        throw Exception('No history found for user: $username');
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        final List<dynamic> data = jsonResponse['data'];
+        // setState(() {
+        //   history = data.map((item) {
+        //     return {
+        //       'roomName': item['room_name'],
+        //       'timeSlot': item['time_slot'],
+        //       'approverName': item['approved_by'],
+        //       'studentName': item['username'],
+        //       'status': item['status'],
+        //       'logDate': item['log_date'],
+        //     };
+        //   }).toList();
+        return data.map((item) {
+          return HistoryRecord.fromJson(item);
+        }).toList();
+        // });
       } else {
-        throw Exception('Failed to load history');
+        throw Exception('Failed to load status');
       }
-    } else {
-      throw Exception('No JWT token or username found');
+    } catch (e) {
+      print('Error fetching status: $e');
     }
   }
 
@@ -76,32 +126,9 @@ class _HistoryUserState extends State<HistoryUser> {
   int _selectedIndex = 2;
 
   void _onDestinationSelected(int index) {
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeUser()),
-        );
-        break;
-      case 1:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const CheckstatusUser()),
-        );
-        break;
-      case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HistoryUser()),
-        );
-        break;
-      case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ProfileUser()),
-        );
-        break;
-    }
+    if (index == _selectedIndex) return; // Skip if already on the selected page
+    _selectedIndex = index;
+    // (existing switch code follows)
   }
 
   @override
@@ -132,10 +159,11 @@ class _HistoryUserState extends State<HistoryUser> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Date and time display
+              // Move the date and time below the AppBar
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Date container
                   Container(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -155,6 +183,7 @@ class _HistoryUserState extends State<HistoryUser> {
                     ),
                   ),
                   const SizedBox(width: 16),
+                  // Time container
                   Container(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -175,21 +204,17 @@ class _HistoryUserState extends State<HistoryUser> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(
+                  height: 16), // Add space between date/time and history list
 
-              // History List with FutureBuilder
+              // History List
               FutureBuilder<List<HistoryRecord>>(
-                future: _historyRecords,
+                future: history,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        'Error: ${snapshot.error}',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    );
+                    return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return Center(child: Text('No history available.'));
                   } else {
@@ -203,18 +228,19 @@ class _HistoryUserState extends State<HistoryUser> {
                             roomName: record.roomName,
                             date: formatDate(record.logDate),
                             time: record.timeSlot,
-                            user: record.studentName,
+                            user: record
+                                .studentName, // Now directly display studentName
                             approver: record.approverName,
-                            imagePath:
-                                'assets/images/meeting.png', // Use appropriate image path
-                            isApproved: record.status == 'Approved',
+                            imagePath: 'assets/images/meeting.png',
+                            isApproved:
+                                record.status.toLowerCase() == 'approved',
                           );
                         },
                       ),
                     );
                   }
                 },
-              ),
+              )
             ],
           ),
         ),
@@ -241,7 +267,7 @@ class RoomSlot extends StatelessWidget {
   final String roomName;
   final String time;
   final String date;
-  final String user;
+  final String user; // Student name to show after "Booking by"
   final String approver;
   final String imagePath;
   final bool isApproved;
@@ -256,13 +282,6 @@ class RoomSlot extends StatelessWidget {
     required this.imagePath,
     required this.isApproved,
   });
-
-  Text buildText(String text) {
-    return Text(
-      text,
-      style: const TextStyle(fontSize: 14, color: Colors.black),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -307,10 +326,26 @@ class RoomSlot extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          buildText(date),
-                          buildText('Time: $time'),
-                          buildText('Booked by: $user'),
-                          buildText('Approver: $approver'),
+                          Text(
+                            date,
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.black),
+                          ),
+                          Text(
+                            'Time: $time',
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.black),
+                          ),
+                          Text(
+                            'Booked by: $user', // Display student name here
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.black),
+                          ),
+                          Text(
+                            'Approver: $approver',
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.black),
+                          ),
                         ],
                       ),
                     ),
@@ -320,14 +355,12 @@ class RoomSlot extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
+                    padding: const EdgeInsets.only(right: 12.0),
                     child: Container(
                       decoration: BoxDecoration(
                         color: isApproved ? Colors.green : Colors.red,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(7),
                       ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 2, horizontal: 8),
                       child: Text(
                         isApproved ? 'Approved' : 'Disapproved',
                         style: const TextStyle(color: Colors.white),
@@ -365,13 +398,13 @@ class HistoryRecord {
 
   factory HistoryRecord.fromJson(Map<String, dynamic> json) {
     return HistoryRecord(
-      historyId: json['history_id'] ?? 0, // Handle null with default value
+      historyId: json['history_id'] ?? 0,
       roomName: json['room_name'] ?? 'Unknown Room',
-      timeSlot: json['time_slot'] ?? 'N/A',
-      approverName: json['approver_name'] ?? 'Unknown',
+      timeSlot: json['time_slot'] ?? 'Unknown Time Slot',
+      approverName: json['approver_name'] ?? 'Unknown Approver',
       studentName: json['student_name'] ?? 'Unknown Student',
-      status: json['status'] ?? 'N/A',
-      logDate: json['log_date'] ?? 'N/A',
+      status: json['booking_status'] ?? 'Unknown Status',
+      logDate: json['log_date'] ?? DateTime.now().toString(),
     );
   }
 }

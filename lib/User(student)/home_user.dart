@@ -1,6 +1,7 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
-import 'package:project_mobileapp/User(student)/History_user.dart';
+import 'package:project_mobileapp/User(student)/History_user.dart'; // Make sure this is correct
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Room_select.dart';
 import 'Check_status.dart';
 import 'Profile_user.dart';
@@ -13,43 +14,108 @@ class HomeUser extends StatefulWidget {
 }
 
 class _HomeState extends State<HomeUser> {
+  // Get the JWT token from SharedPreferences
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    print("SharedPreferences initialized");
+    return prefs.getString('jwtToken');
+  }
+
+  // Save JWT token and username to SharedPreferences
+  Future<void> saveToken(String token, String username) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('jwtToken', token); // Save token
+    await prefs.setString('username', username); // Save username
+    print('Saved JWT token: $token');
+    print('Saved username: $username');
+
+    // Verify that the token is saved
+    print("Saved JWT Token: $token");
+    String? savedToken = prefs.getString('jwtToken');
+    print('Token saved: $savedToken');
+  }
+
+  // Extract username from the JWT token
+  Future<String?> extractUsernameFromToken() async {
+    String? token = await getToken();
+    if (token == null) {
+      print("No token found in SharedPreferences");
+      return null;
+    }
+
+    print("Retrieved token: $token");
+
+    try {
+      // Decode the JWT token
+      final decodedToken = JWT.decode(token);
+
+      print("Decoded Token: $decodedToken");
+
+      String? username = decodedToken.payload['username'];
+      return username;
+    } catch (e) {
+      print("Error decoding JWT: $e");
+      return null;
+    }
+  }
+
+  Future<void> delayedSaveToken(String token, String username) async {
+    await Future.delayed(Duration(seconds: 2)); // Simulate delay
+    await saveToken(token, username);
+    String? savedToken = await getToken();
+    print("Delayed token: $savedToken");
+  }
+
+  // Navigation function
+  int _selectedIndex = 0;
+
+  Future<void> _onDestinationSelected(int index) async {
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeUser()),
+        );
+        break;
+      case 1:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const CheckstatusUser()),
+        );
+        break;
+      case 2:
+        String? username = await extractUsernameFromToken();
+        if (username == null) {
+          // Handle the null case, for example:
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Username not found. Please log in again.')),
+          );
+          // Optionally, redirect to the login screen if needed
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HistoryUser(username: username),
+            ),
+          );
+        }
+        break;
+      case 3:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ProfileUser()),
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get the current date and time
     DateTime now = DateTime.now();
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
-
-    //Nav
-    int _selectedIndex = 0;
-    void _onDestinationSelected(int index) {
-      switch (index) {
-        case 0:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeUser()),
-          );
-          break;
-        case 1:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const CheckstatusUser()),
-          );
-          break;
-        case 2:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HistoryUser()),
-          );
-          break;
-        case 3:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => ProfileUser()),
-          );
-          break;
-      }
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -109,11 +175,11 @@ class _HomeState extends State<HomeUser> {
               children: [
                 GestureDetector(
                   onTap: () {
+                    // Uncomment to navigate to Room Select
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(
-                    //       builder: (context) =>
-                    //           const RoomSelect()), // Change this if necessary
+                    //       builder: (context) => const RoomSelect()),
                     // );
                   },
                   child: const RoomCard(
@@ -126,7 +192,6 @@ class _HomeState extends State<HomeUser> {
           ),
         ],
       ),
-      //Nav bar (bottom)
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,

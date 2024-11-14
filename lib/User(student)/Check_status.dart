@@ -17,7 +17,7 @@ class CheckstatusUser extends StatefulWidget {
 }
 
 class Fetch extends State<CheckstatusUser> {
-  final String _url = 'http://172.25.236.139:3000/';
+  final String _url = 'http://192.168.183.1:3000/';
   bool _isloading = false;
   String username = '';
   List? status;
@@ -27,7 +27,7 @@ class Fetch extends State<CheckstatusUser> {
     getStatus();
   }
 
-// //Fetch data from server
+  //Fetch data from server
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('jwtToken', token); // Save token with key 'jwtToken'
@@ -45,7 +45,7 @@ class Fetch extends State<CheckstatusUser> {
       }
 
       final response = await http.get(
-        Uri.parse('http://172.25.236.139:3000/$username/status'),
+        Uri.parse('http://192.168.183.1:3000/$username/status'),
         headers: {
           'Authorization': 'Bearer $token',
         },
