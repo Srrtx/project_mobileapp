@@ -1,10 +1,12 @@
+import 'dart:convert';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
-import 'package:project_mobileapp/User(student)/History_user.dart'; // Make sure this is correct
+import 'package:http/http.dart' as http;
+import 'package:project_mobileapp/User(student)/Check_status.dart';
+import 'package:project_mobileapp/User(student)/History_user.dart';
+import 'package:project_mobileapp/User(student)/Profile_user.dart';
+import 'package:project_mobileapp/User(student)/Room_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'Room_select.dart';
-import 'Check_status.dart';
-import 'Profile_user.dart';
 
 class HomeUser extends StatefulWidget {
   const HomeUser({super.key});
@@ -14,99 +16,109 @@ class HomeUser extends StatefulWidget {
 }
 
 class _HomeState extends State<HomeUser> {
-  // Get the JWT token from SharedPreferences
+  List<Room> rooms = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRooms();
+  }
+
+  // Future<void> fetchRooms() async {
+  //   final uri = Uri.parse('http://192.168.127.1:3000/rooms');
+  //   final response = await http.get(uri);
+  //   if (response.statusCode == 200) {
+  //     final List<dynamic> roomData = json.decode(response.body)['rooms'];
+  //     setState(() {
+  //       rooms = roomData.map((room) => Room.fromJson(room)).toList();
+  //     });
+  //   } else {
+  //     print('Failed to load rooms');
+  //   }
+  // }
+
+  //Fetch data from server
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     print("SharedPreferences initialized");
     return prefs.getString('jwtToken');
   }
 
-  // Save JWT token and username to SharedPreferences
-  Future<void> saveToken(String token, String username) async {
+  Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('jwtToken', token); // Save token
-    await prefs.setString('username', username); // Save username
-    print('Saved JWT token: $token');
-    print('Saved username: $username');
-
-    // Verify that the token is saved
-    print("Saved JWT Token: $token");
-    String? savedToken = prefs.getString('jwtToken');
-    print('Token saved: $savedToken');
+    await prefs.setString('jwtToken', token);
+    print('Token saved: $token');
   }
 
-  // Extract username from the JWT token
-  Future<String?> extractUsernameFromToken() async {
-    String? token = await getToken();
-    if (token == null) {
-      print("No token found in SharedPreferences");
-      return null;
-    }
+  // Future<void> fetchRooms() async {
+  //   try {
+  //     final token = await getToken(); // Retrieve the stored token
+  //     if (token == null) {
+  //       print("Token is not available");
+  //       return;
+  //     }
 
-    print("Retrieved token: $token");
+  //     final uri = Uri.parse('http://192.168.127.1:3000/rooms');
+  //     final response = await http.get(
+  //       uri,
+  //       headers: {
+  //         'Authorization':
+  //             'Bearer $token', // Attach token in Authorization header
+  //       },
+  //     );
 
+  //     if (response.statusCode == 200) {
+  //       final Map<String, dynamic> responseData = json.decode(response.body);
+  //       if (responseData.containsKey('rooms')) {
+  //         final List<dynamic> roomData = responseData['rooms'];
+  //         setState(() {
+  //           rooms = roomData.map((room) => Room.fromJson(room)).toList();
+  //         });
+  //       } else {
+  //         print('Unexpected response format: ${response.body}');
+  //       }
+  //     } else {
+  //       print('Failed to load rooms, status code: ${response.statusCode}');
+  //       print('Response body: ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print('An error occurred: $e');
+  //   }
+  // }
+  Future<void> fetchRooms() async {
     try {
-      // Decode the JWT token
-      final decodedToken = JWT.decode(token);
+      final token = await getToken(); // Retrieve the stored token
+      if (token == null) {
+        print("Token is not available");
+        return;
+      }
 
-      print("Decoded Token: $decodedToken");
+      final uri = Uri.parse('http://192.168.127.1:3000/rooms');
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization':
+              'Bearer $token', // Attach token in Authorization header
+        },
+      );
 
-      String? username = decodedToken.payload['username'];
-      return username;
-    } catch (e) {
-      print("Error decoding JWT: $e");
-      return null;
-    }
-  }
-
-  Future<void> delayedSaveToken(String token, String username) async {
-    await Future.delayed(Duration(seconds: 2)); // Simulate delay
-    await saveToken(token, username);
-    String? savedToken = await getToken();
-    print("Delayed token: $savedToken");
-  }
-
-  // Navigation function
-  int _selectedIndex = 0;
-
-  Future<void> _onDestinationSelected(int index) async {
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeUser()),
-        );
-        break;
-      case 1:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const CheckstatusUser()),
-        );
-        break;
-      case 2:
-        String? username = await extractUsernameFromToken();
-        if (username == null) {
-          // Handle the null case, for example:
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Username not found. Please log in again.')),
-          );
-          // Optionally, redirect to the login screen if needed
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData.containsKey('rooms')) {
+          final List<dynamic> roomData = responseData['rooms'];
+          setState(() {
+            rooms = roomData.map((room) => Room.fromJson(room)).toList();
+          });
+          print("Rooms loaded successfully");
         } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HistoryUser(username: username),
-            ),
-          );
+          print('Unexpected response format: ${response.body}');
         }
-        break;
-      case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ProfileUser()),
-        );
-        break;
+      } else {
+        print('Failed to load rooms, status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('An error occurred while fetching rooms: $e');
     }
   }
 
@@ -116,6 +128,114 @@ class _HomeState extends State<HomeUser> {
     DateTime now = DateTime.now();
     String currentDate = '${now.day}/${now.month}/${now.year}';
     String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+
+    // Get the JWT token from SharedPreferences
+    Future<String?> getToken() async {
+      final prefs = await SharedPreferences.getInstance();
+      print("SharedPreferences initialized");
+      return prefs.getString('jwtToken');
+    }
+
+    // Save JWT token and username to SharedPreferences
+    Future<void> saveToken(String token, String username) async {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('jwtToken', token); // Save token
+      await prefs.setString('username', username); // Save username
+      print('Saved JWT token: $token');
+      print('Saved username: $username');
+
+      // Verify that the token is saved
+      print("Saved JWT Token: $token");
+      String? savedToken = prefs.getString('jwtToken');
+      print('Token saved: $savedToken');
+    }
+
+    // Extract username from the JWT token
+    Future<String?> extractUsernameFromToken() async {
+      String? token = await getToken();
+      if (token == null) {
+        print("No token found in SharedPreferences");
+        return null;
+      }
+
+      print("Retrieved token: $token");
+
+      try {
+        // Decode the JWT token
+        final decodedToken = JWT.decode(token);
+
+        print("Decoded Token: $decodedToken");
+
+        String? username = decodedToken.payload['username'];
+        return username;
+      } catch (e) {
+        print("Error decoding JWT: $e");
+        return null;
+      }
+    }
+
+    Future<void> delayedSaveToken(String token, String username) async {
+      await Future.delayed(Duration(seconds: 2)); // Simulate delay
+      await saveToken(token, username);
+      String? savedToken = await getToken();
+      print("Delayed token: $savedToken");
+    }
+
+    // Navigation function
+    int _selectedIndex = 0;
+
+    Future<void> _onDestinationSelected(int index) async {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeUser()),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const CheckstatusUser()),
+          );
+          break;
+        case 2:
+          String? username = await extractUsernameFromToken();
+          if (username == null) {
+            // Handle the null case, for example:
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('Username not found. Please log in again.')),
+            );
+            // Optionally, redirect to the login screen if needed
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HistoryUser(username: username),
+              ),
+            );
+          }
+          break;
+        case 3:
+          String? username = await extractUsernameFromToken();
+          if (username == null) {
+            // Handle the null case, for example:
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('Username not found. Please log in again.')),
+            );
+            // Optionally, redirect to the login screen if needed
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfileUser(username: username),
+              ),
+            );
+          }
+          break;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -170,28 +290,46 @@ class _HomeState extends State<HomeUser> {
             ),
           ),
           Expanded(
-            child: ListView(
+            child: ListView.builder(
               padding: const EdgeInsets.all(16),
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    // Uncomment to navigate to Room Select
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => const RoomSelect()),
-                    // );
+              itemCount: rooms.length,
+              itemBuilder: (context, index) {
+                final room = rooms[index];
+                return GestureDetector(
+                  onTap: () async {
+                    // Navigate to RoomSelect screen on card tap
+
+                    String? username = await extractUsernameFromToken();
+                    if (username == null) {
+                      // Handle the null case, for example:
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text(
+                                'Username not found. Please log in again.')),
+                      );
+                      // Optionally, redirect to the login screen if needed
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RoomSelect(
+                            roomId: '$room.roomId',
+                            roomName: room.roomName,
+                          ),
+                        ),
+                      );
+                    }
                   },
-                  child: const RoomCard(
-                      roomName: 'Meeting Room 1', occupancy: '2/4'),
-                ),
-                const RoomCard(roomName: 'Meeting Room 2', occupancy: '1/4'),
-                const RoomCard(roomName: 'Meeting Room 3', occupancy: '0/4'),
-              ],
+                  child: RoomCard(
+                    roomName: room.roomName,
+                  ),
+                );
+              },
             ),
           ),
         ],
       ),
+      //Nav bar (bottom)
       bottomNavigationBar: NavigationBar(
         height: 60,
         elevation: 0,
@@ -210,11 +348,28 @@ class _HomeState extends State<HomeUser> {
   }
 }
 
+class Room {
+  final String roomName;
+  final int roomId;
+
+  Room({required this.roomName, required this.roomId});
+
+  factory Room.fromJson(Map<String, dynamic> json) {
+    return Room(
+      roomName: json['room_name'],
+      roomId: json['room_id'],
+    );
+  }
+}
+
 class RoomCard extends StatelessWidget {
   final String roomName;
-  final String occupancy;
+  // final String occupancy;
 
-  const RoomCard({super.key, required this.roomName, required this.occupancy});
+  const RoomCard({
+    super.key,
+    required this.roomName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -249,13 +404,6 @@ class RoomCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  Text(
-                    occupancy,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
                 ],
               ),
             ),

@@ -5,7 +5,6 @@ import 'package:project_mobileapp/User(student)/Check_status.dart';
 import 'package:project_mobileapp/User(student)/History_user.dart';
 import 'package:project_mobileapp/User(student)/Profile_user.dart';
 import 'package:project_mobileapp/Login.dart';
-import 'package:project_mobileapp/User(student)/home_user.dart';
 
 class ProfileUser extends StatefulWidget {
   final String username;
@@ -23,10 +22,10 @@ class _ProfileUserState extends State<ProfileUser> {
 
   Future<void> fetchProfile() async {
     final response = await http.get(
-      Uri.parse('http://192.168.127.1:3000/profile/${widget.username}'),
+      Uri.parse('http://localhost:3000/profile/${widget.username}'),
     );
 
-    if (response.statusCode == 200) {
+     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
         userProfile = data;
@@ -40,11 +39,13 @@ class _ProfileUserState extends State<ProfileUser> {
     }
   }
 
+
   @override
   void initState() {
     super.initState();
     fetchProfile();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,18 +65,18 @@ class _ProfileUserState extends State<ProfileUser> {
             MaterialPageRoute(builder: (context) => const CheckstatusUser()),
           );
           break;
-        // case 2:
-        //   Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => const HistoryUser),
-        //   );
-        //   break;
-        // case 3:
-        //   Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => ProfileUser(),
-        //   );
-        //   break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HistoryUser),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileUser(),
+          );
+          break;
       }
     }
 
@@ -113,7 +114,7 @@ class _ProfileUserState extends State<ProfileUser> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        widget.username,
+                        widget.userName,
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,

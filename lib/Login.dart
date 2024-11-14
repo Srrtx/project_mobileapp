@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:project_mobileapp/Register.dart';
-import 'package:project_mobileapp/Login.dart';
 import 'package:project_mobileapp/User(student)/home_user.dart';
 import 'Approver/Home_approver.dart';
 import 'Staff(admin)/Home_staff.dart';
@@ -28,7 +27,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final Uri _uri = Uri.parse('http://192.168.183.1:3000/login');
+  final Uri _uri = Uri.parse('http://192.168.127.1:3000/login');
   String _message = '';
   bool isWaiting = false;
   final formKey = GlobalKey<FormState>();

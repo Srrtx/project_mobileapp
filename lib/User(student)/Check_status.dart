@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:project_mobileapp/Login.dart';
 import 'package:project_mobileapp/User(student)/History_user.dart';
 import 'package:project_mobileapp/User(student)/Profile_user.dart';
-import 'home_user.dart';
+import 'package:project_mobileapp/User(student)/home_user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -75,6 +74,35 @@ class Fetch extends State<CheckstatusUser> {
     }
   }
 
+  // Get the JWT token from SharedPreferences
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    print("SharedPreferences initialized");
+    return prefs.getString('jwtToken');
+  }
+
+  // Extract username from the JWT token
+  Future<String?> extractUsernameFromToken() async {
+    String? token = await getToken();
+    if (token == null) {
+      print("No token found in SharedPreferences");
+      return null;
+    }
+    print("Retrieved token: $token");
+    try {
+      // Decode the JWT token
+      final decodedToken = JWT.decode(token);
+
+      print("Decoded Token: $decodedToken");
+
+      String? username = decodedToken.payload['username'];
+      return username;
+    } catch (e) {
+      print("Error decoding JWT: $e");
+      return null;
+    }
+  }
+
   void popDialog(String title, String message) {
     showDialog(
       context: context,
@@ -95,7 +123,7 @@ class Fetch extends State<CheckstatusUser> {
 
   // Navigation
   int selectedIndex = 1;
-  void onDestinationSelected(int index) {
+  Future<void> onDestinationSelected(int index) async {
     switch (index) {
       case 0:
         Navigator.pushReplacement(
@@ -110,16 +138,40 @@ class Fetch extends State<CheckstatusUser> {
         );
         break;
       case 2:
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const HistoryUser()),
-        // );
+        String? username = await extractUsernameFromToken();
+        if (username == null) {
+          // Handle the null case, for example:
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Username not found. Please log in again.')),
+          );
+          // Optionally, redirect to the login screen if needed
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HistoryUser(username: username),
+            ),
+          );
+        }
         break;
       case 3:
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const ProfileUser()),
-        // );
+        String? username = await extractUsernameFromToken();
+        if (username == null) {
+          // Handle the null case, for example:
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Username not found. Please log in again.')),
+          );
+          // Optionally, redirect to the login screen if needed
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileUser(username: username),
+            ),
+          );
+        }
         break;
     }
   }
