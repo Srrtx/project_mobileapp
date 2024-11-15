@@ -24,19 +24,6 @@ class _HomeState extends State<HomeUser> {
     fetchRooms();
   }
 
-  // Future<void> fetchRooms() async {
-  //   final uri = Uri.parse('http://192.168.127.1:3000/rooms');
-  //   final response = await http.get(uri);
-  //   if (response.statusCode == 200) {
-  //     final List<dynamic> roomData = json.decode(response.body)['rooms'];
-  //     setState(() {
-  //       rooms = roomData.map((room) => Room.fromJson(room)).toList();
-  //     });
-  //   } else {
-  //     print('Failed to load rooms');
-  //   }
-  // }
-
   //Fetch data from server
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -50,41 +37,6 @@ class _HomeState extends State<HomeUser> {
     print('Token saved: $token');
   }
 
-  // Future<void> fetchRooms() async {
-  //   try {
-  //     final token = await getToken(); // Retrieve the stored token
-  //     if (token == null) {
-  //       print("Token is not available");
-  //       return;
-  //     }
-
-  //     final uri = Uri.parse('http://192.168.127.1:3000/rooms');
-  //     final response = await http.get(
-  //       uri,
-  //       headers: {
-  //         'Authorization':
-  //             'Bearer $token', // Attach token in Authorization header
-  //       },
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       final Map<String, dynamic> responseData = json.decode(response.body);
-  //       if (responseData.containsKey('rooms')) {
-  //         final List<dynamic> roomData = responseData['rooms'];
-  //         setState(() {
-  //           rooms = roomData.map((room) => Room.fromJson(room)).toList();
-  //         });
-  //       } else {
-  //         print('Unexpected response format: ${response.body}');
-  //       }
-  //     } else {
-  //       print('Failed to load rooms, status code: ${response.statusCode}');
-  //       print('Response body: ${response.body}');
-  //     }
-  //   } catch (e) {
-  //     print('An error occurred: $e');
-  //   }
-  // }
   Future<void> fetchRooms() async {
     try {
       final token = await getToken(); // Retrieve the stored token
@@ -313,8 +265,9 @@ class _HomeState extends State<HomeUser> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => RoomSelect(
-                            roomId: '$room.roomId',
+                            roomId: room.roomId,
                             roomName: room.roomName,
+                            // timeslotId: room.timeslot_id,
                           ),
                         ),
                       );
@@ -351,13 +304,19 @@ class _HomeState extends State<HomeUser> {
 class Room {
   final String roomName;
   final int roomId;
+  // final int timeslot_id;
 
-  Room({required this.roomName, required this.roomId});
+  Room({
+    required this.roomName,
+    required this.roomId,
+    // required this.timeslot_id
+  });
 
   factory Room.fromJson(Map<String, dynamic> json) {
     return Room(
       roomName: json['room_name'],
       roomId: json['room_id'],
+      // timeslot_id: json['timeslot_id'],
     );
   }
 }
