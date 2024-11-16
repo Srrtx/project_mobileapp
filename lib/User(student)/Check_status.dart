@@ -60,9 +60,9 @@ class Fetch extends State<CheckstatusUser> {
         setState(() {
           status = data.map((item) {
             return {
-              'room_name': item['room_name'],
+              'room_name': item['roomname'],
               'status': item['status'],
-              'time_slot': item['time_slot'],
+              'time_slot': item['timeslot'],
             };
           }).toList();
         });
@@ -168,7 +168,7 @@ class Fetch extends State<CheckstatusUser> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => ProfileUser(username: username),
+              builder: (context) => ProfileUser(),
             ),
           );
         }

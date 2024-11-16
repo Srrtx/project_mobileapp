@@ -27,7 +27,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final Uri _uri = Uri.parse('http://192.168.127.1:3000/login');
+  final Uri _uri = Uri.parse('http://192.168.183.1:3000/login');
   String _message = '';
   bool isWaiting = false;
   final formKey = GlobalKey<FormState>();
@@ -118,6 +118,7 @@ class _LoginPageState extends State<LoginPage> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('username', username); // Save username
     await prefs.setString('jwtToken', token); // Save token
+
     print('Saved username: ${prefs.getString('username')}');
     print('Saved token: ${prefs.getString('jwtToken')}');
   }
@@ -141,11 +142,15 @@ class _LoginPageState extends State<LoginPage> {
             }),
           )
           .timeout(const Duration(seconds: 10));
-
+      debugPrint(response.statusCode.toString());
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         final token = responseData['token'];
+        int userID = responseData['userID'];
+        debugPrint(userID.toString());
         final usernameValue = username.text;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('user_id', userID);
 
         // Save the token and username in SharedPreferences
         await saveLoginDetails(usernameValue, token);

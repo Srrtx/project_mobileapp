@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:project_mobileapp/User(student)/Check_status.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,7 +41,7 @@ class _RoomSelectState extends State<RoomSelect> {
 
   Future<void> fetchTimeSlots() async {
     final roomId = widget.roomId; // Ensure this is a valid string or number
-    final url = Uri.parse('http://192.168.127.1:3000/rooms/$roomId/timeslots');
+    final url = Uri.parse('http://192.168.183.1:3000/rooms/$roomId/timeslots');
     print("Fetching time slots for room ID: $roomId");
     print("Request URL: $url");
 
@@ -114,45 +115,116 @@ class _RoomSelectState extends State<RoomSelect> {
     }
   }
 
-  // Future<void> bookSlot(BuildContext context) async {
+  Future<int?> extractUserIdFromToken(String token) async {
+    try {
+      final decodedToken = JWT.decode(token); // Decoding the token
+      print("Decoded Token: ${decodedToken.payload}");
+
+      // Retrieve the userId from the token payload
+      if (decodedToken.payload.containsKey('userId')) {
+        return decodedToken.payload['userId']
+            as int?; // Casting to int if expected
+      } else {
+        print("userId not found in token payload");
+        return null;
+      }
+    } catch (e) {
+      print("Error decoding JWT: $e");
+      return null;
+    }
+  }
+
+  // Future<void> makeBooking(int timeslotId) async {
+  //   final url = Uri.parse("http://192.168.183.1:3000/booking");
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final token = prefs.getString("jwtToken");
+
+  //   if (token == null) {
+  //     print("Token is not available");
+  //     return;
+  //   }
+  //   // Extract userId from the token
+  //   String? userId = (await extractUserIdFromToken(token)) as String?;
+  //   if (userId == null) {
+  //     print("User ID could not be extracted from token");
+  //   }
   //   try {
+  //     final decodedToken = JWT.decode(token);
+  //     userId = decodedToken.payload[
+  //         'userId']; // Replace 'userId' with the actual key in your token payload
+  //     print("Extracted userId: $userId");
+  //   } catch (e) {
+  //     print("Error decoding token: $e");
+  //     return;
+  //   }
+
+  //   if (userId == null) {
+  //     print("userId is missing in the token payload");
+  //     return;
+  //   }
+
+  //   try {
+  //     final decodedToken = JWT.decode(token);
+
   //     final response = await http.post(
-  //       Uri.parse('http://169.254.46.6:3000/booking'),
-  //       headers: {"Content-Type": "application/json"},
-  //       body: json.encode({
+  //       url,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //       body: jsonEncode({
   //         "roomId": widget.roomId,
-  //         // "userId": widget.userId,
-  //         // "timeslotId": widget.timeslotId,
+  //         "userId": userId,
+  //         "timeslotId": timeslotId,
   //       }),
   //     );
 
-  //     if (response.statusCode == 201) {
-  //       // Booking successful
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text("Booking successful")),
-  //       );
+  //     if (response.statusCode == 200) {
+  //       print("Booking confirmed!");
+  //       setState(() {
+  //         timeSlots.firstWhere((slot) => slot.id == timeslotId).status =
+  //             'pending';
+  //       });
   //     } else {
-  //       // Handle error
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text("Booking failed: ${response.body}")),
-  //       );
+  //       print("Failed to book time slot: ${response.body}");
   //     }
   //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text("An error occurred")),
-  //     );
+  //     print("Error during booking: $e");
   //   }
   // }
 
   Future<void> makeBooking(int timeslotId) async {
     final url = Uri.parse("http://192.168.127.1:3000/booking");
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("token");
+    final token = prefs.getString("jwtToken"); // Use "jwtToken" consistently
 
     if (token == null) {
       print("Token is not available");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("Authentication token is missing. Please log in.")),
+      );
       return;
     }
+
+    // Extract userId from the token
+
+    int? user_id = prefs.getInt('user_id');
+    if (user_id == null) {
+      print("User ID could not be extracted from token");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to retrieve user information.")),
+      );
+      return;
+    }
+
+    Map<String, dynamic> requestBody = {
+      "roomId": widget.roomId,
+      "userId": user_id,
+      "timeslotId": timeslotId,
+    };
+
+    print("Booking Request Body: ${jsonEncode(requestBody)}"); // Debug log
 
     try {
       final response = await http.post(
@@ -161,21 +233,38 @@ class _RoomSelectState extends State<RoomSelect> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({
-          "roomId": widget.roomId, // Ensure `widget.roomId` is accessible here
-          "userId": "<user-id>", // Replace with the actual user ID
-          "timeslotId": timeslotId,
-        }),
+        body: jsonEncode(requestBody),
       );
 
       if (response.statusCode == 201) {
+        // Successfully created booking
         print("Booking confirmed!");
-        // Optionally, refresh the time slot list or show a success message
+
+        // setState(() {
+        //   timeSlots.firstWhere((slot) => slot.id == timeslotId).status =
+        //       'reserved';
+        // });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Booking confirmed for $timeslotId.")),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const CheckstatusUser()),
+        );
       } else {
         print("Failed to book time slot: ${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text("Failed to book the selected time slot.")),
+        );
       }
-    } catch (error) {
-      print("Error during booking request: $error");
+    } catch (e) {
+      print("Error during booking: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content:
+                Text("An error occurred while booking. Please try again.")),
+      );
     }
   }
 
@@ -215,7 +304,7 @@ class _RoomSelectState extends State<RoomSelect> {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 239, 220, 151),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
@@ -248,8 +337,11 @@ class _RoomSelectState extends State<RoomSelect> {
             SizedBox(height: 20),
             Expanded(
               child: timeSlots.isEmpty
-                  ? Center(
-                      child: Text('No available time slots for this room.'))
+                  ? const Center(
+                      child:
+                          // Text('No available time slots for this room.'),
+                          CircularProgressIndicator(),
+                    )
                   : ListView.builder(
                       itemCount: timeSlots.length,
                       itemBuilder: (context, index) {
@@ -269,7 +361,7 @@ class _RoomSelectState extends State<RoomSelect> {
                           color = Colors.green;
                           statusText = 'Free';
                         }
-                        return _buildTimeSlot(time, color, status, 1);
+                        return _buildTimeSlot(time, color, statusText, slot.id);
                       },
                     ),
             ),
@@ -283,7 +375,7 @@ class _RoomSelectState extends State<RoomSelect> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Color.fromARGB(255, 239, 220, 151),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -296,78 +388,105 @@ class _RoomSelectState extends State<RoomSelect> {
     );
   }
 
+//   Widget _buildTimeSlot(String time, Color color, String status) {
+//     return Card(
+//       margin: EdgeInsets.symmetric(vertical: 8),
+//       color: color.withOpacity(0.2),
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(8),
+//       ),
+//       child: InkWell(
+//         onTap: status == 'free' || status == 'reserved'
+//             ? () {
+//                 // Show a pop-up dialog on tap
+//                 showDialog(
+//                   context: context,
+//                   builder: (BuildContext context) {
+//                     return AlertDialog(
+//                       title: Text('Time Slot: $time'),
+//                       content: Text('Status: $status'),
+//                       actions: [
+//                         TextButton(
+//                           onPressed: () {
+//                             Navigator.of(context).pop(); // Close the dialog
+//                           },
+//                           child: Text('Close'),
+//                         ),
+//                       ],
+//                     );
+//                   },
+//                 );
+//               }
+//             : null, // Disable tap for 'pending' status
+//         child: Padding(
+//           padding: EdgeInsets.all(16),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               Text(
+//                 'Time $time',
+//                 style: TextStyle(
+//                     fontSize: 16,
+//                     fontWeight: FontWeight.bold,
+//                     color: Colors.black),
+//               ),
+//               Container(
+//                 padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+//                 decoration: BoxDecoration(
+//                   color: color,
+//                   borderRadius: BorderRadius.circular(4),
+//                 ),
+//                 child: Text(
+//                   status,
+//                   style: TextStyle(color: Colors.white),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
   Widget _buildTimeSlot(
-      String time, Color color, String status, int timeslotId) {
-    return GestureDetector(
-      onTap: () {
-        print("Time slot tapped: $time");
-        if (status == 'Free' || status == 'Reserved') {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Booking Details'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Time: $time'),
-                    Text('Status: $status'),
-                    if (status == 'Free')
-                      const Text('You can book this time slot.'),
-                    if (status == 'Reserved')
-                      const Text('This time slot is already booked.'),
-                  ],
+      String time, Color color, final status, int timeslotId) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      color: color.withOpacity(0.2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        onTap: status.toString().trim().toLowerCase() == 'free'
+            ? () {
+                _showBookingConfirmation(time, timeslotId);
+              }
+            : null,
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Time $time',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Close'),
-                  ),
-                  if (status == 'Free')
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        makeBooking(timeslotId);
-                      },
-                      child: const Text('Book'),
-                    ),
-                ],
-              );
-            },
-          );
-        }
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 8),
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Time $time',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+                child: Text(
+                  status,
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                status,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

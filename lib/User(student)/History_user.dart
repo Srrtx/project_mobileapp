@@ -184,7 +184,7 @@ class _HistoryUserState extends State<HistoryUser> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => ProfileUser(username: username),
+              builder: (context) => ProfileUser(),
             ),
           );
         }

@@ -45,7 +45,7 @@ class _HomeState extends State<HomeUser> {
         return;
       }
 
-      final uri = Uri.parse('http://192.168.127.1:3000/rooms');
+      final uri = Uri.parse('http://192.168.183.1:3000/rooms');
       final response = await http.get(
         uri,
         headers: {
@@ -181,7 +181,7 @@ class _HomeState extends State<HomeUser> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => ProfileUser(username: username),
+                builder: (context) => ProfileUser(),
               ),
             );
           }

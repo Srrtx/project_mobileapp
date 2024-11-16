@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:project_mobileapp/User(student)/Check_status.dart';
-import 'package:project_mobileapp/User(student)/History_user.dart';
-import 'package:project_mobileapp/User(student)/Profile_user.dart';
+// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:project_mobileapp/Login.dart';
-import 'package:project_mobileapp/User(student)/home_user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileUser extends StatefulWidget {
-  final String username;
-  ProfileUser({required this.username});
+  // final int userId;
+  // final String userName;
+  // final String userEmail;
 
   @override
   _ProfileUserState createState() => _ProfileUserState();
@@ -17,27 +16,59 @@ class ProfileUser extends StatefulWidget {
 
 class _ProfileUserState extends State<ProfileUser> {
   Map<String, dynamic>? userProfile;
-  String? userName;
-  String? userEmail;
-  int _selectedIndex = 0;
+
+  bool isLoading = true;
 
   Future<void> fetchProfile() async {
-    final response = await http.get(
-      Uri.parse('http://192.168.127.1:3000/profile/${widget.username}'),
-    );
+    final prefs = await SharedPreferences.getInstance();
+    int? userID = await prefs.getInt('user_id');
+    String? jwtToken = prefs.getString('jwtToken');
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        userProfile = data;
-        userName = data['name'];
-        userEmail = data['email'];
-      });
-    } else if (response.statusCode == 404) {
-      print('No booking history found for this user');
-    } else {
-      print('Error: ${response.statusCode}');
+    if (jwtToken == null) {
+      print('No token found');
+      _logout();
+      return;
     }
+    debugPrint(jwtToken);
+
+    print('Retrieved token: $jwtToken'); // ตรวจสอบว่า token ถูกดึงมาได้หรือไม่
+    debugPrint(userID.toString());
+
+    final url = Uri.parse('http://192.168.127.1:3000/profile/${userID}');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $jwtToken'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          userProfile = data;
+        });
+      } else if (response.statusCode == 401) {
+        print('Unauthorized: Token expired or invalid');
+        _logout();
+      } else if (response.statusCode == 404) {
+        print('Profile not found');
+      } else {
+        print('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching profile: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _logout() async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
   }
 
   @override
@@ -48,42 +79,17 @@ class _ProfileUserState extends State<ProfileUser> {
 
   @override
   Widget build(BuildContext context) {
-    //Nav
-    int _selectedIndex = 0;
-    void _onDestinationSelected(int index) {
-      switch (index) {
-        case 0:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeUser()),
-          );
-          break;
-        case 1:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const CheckstatusUser()),
-          );
-          break;
-        // case 2:
-        //   Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => const HistoryUser),
-        //   );
-        //   break;
-        // case 3:
-        //   Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => ProfileUser(),
-        //   );
-        //   break;
-      }
+    if (isLoading) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Profile')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
     }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
-      body: Container(
-        color: Colors.white,
-        child: Padding(
+      body: SingleChildScrollView(
+        child: Container(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +119,7 @@ class _ProfileUserState extends State<ProfileUser> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        widget.username,
+                        userProfile?['username'] ?? 'Loading...',
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
@@ -129,33 +135,30 @@ class _ProfileUserState extends State<ProfileUser> {
                       ),
                       const SizedBox(height: 10),
                       Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16.0),
-                          margin: const EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            border: Border.all(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Full Name: ${userName}',
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              Text('Email: ${userEmail}',
-                                  style: const TextStyle(fontSize: 14)),
-                            ],
-                          )),
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16.0),
+                        margin: const EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Full Name: ${userProfile?['name'] ?? 'Loading...'}',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            Text(
+                              'Email: ${userProfile?['email'] ?? 'Loading...'}',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
                       GestureDetector(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()),
-                          );
-                        },
+                        onTap: _logout,
                         child: Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(16.0),
@@ -184,20 +187,6 @@ class _ProfileUserState extends State<ProfileUser> {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: NavigationBar(
-        height: 60,
-        elevation: 0,
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: _onDestinationSelected,
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(
-              icon: Icon(Icons.pie_chart), label: 'Dashboard'),
-          NavigationDestination(icon: Icon(Icons.schedule), label: 'History'),
-          NavigationDestination(
-              icon: Icon(Icons.account_circle), label: 'Profile'),
-        ],
       ),
     );
   }
